@@ -3,6 +3,7 @@ package com.cognixia.jump.progresstracker.dao;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cognixia.jump.connection.BetterConnectionManager;
+
 
 public class UserDaoSql implements UserDao {
 	
@@ -59,7 +61,47 @@ public class UserDaoSql implements UserDao {
 
 	@Override
 	public Optional<Show> getShowById(int id) {
-		// TODO Auto-generated method stub
+try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where Show_ID = ?")) {
+			
+			pstmt.setInt(1, id);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			
+			// rs.next() will return false if nothing found
+			// if you enter the if block, that show with that id was found
+			if(rs.next()) {
+				
+				int showId = rs.getInt("Show_ID");
+				String name = rs.getString("Name");
+				String descript = rs.getString("Descript");
+				int numEp = rs.getInt("TotalEps");
+				
+				rs.close();
+				
+				// constructing the object
+				Show dept = new Show(showId, name, descript, numEp);
+				
+				// placing it in the optional
+				Optional<Show> deptFound = Optional.of(dept);
+				
+				// return the optional
+				return deptFound;
+			}
+			else {
+				// if you did not find the department with that id, return an empty optional
+				rs.close();
+				return Optional.empty();
+			}
+			
+			
+		} catch (SQLException e) {
+			
+			// just in case an exception occurs, return nothing in the optional
+			return Optional.empty();
+		} catch (Exception e) {
+			
+		}
 		return Optional.empty();
 	}
 
