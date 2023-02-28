@@ -1,6 +1,7 @@
 package com.cognixia.jump.connection;
 
 import java.io.FileInputStream;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -56,8 +57,8 @@ public class BetterConnectionManager {
 		} catch (FileNotFoundException e) {
 			System.out.println("Couldn't load detail for connection, can't make connection");
 		} catch (ClassNotFoundException e) {
-			// System.out.println("Couldn't load driver, can't make connection");
-			e.printStackTrace();
+			System.out.println("Couldn't load driver, can't make connection");
+			// e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("Couldn't load connection details, can't make connection");
 		} catch (SQLException e) {
