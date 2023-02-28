@@ -10,16 +10,13 @@ import java.util.Optional;
 
 public interface UserDao {
 	
-public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException;
+	public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException;
 	
-//	public List<Department> getAllDepartment();
-//	
-//	public Optional<Department> getDepartmentById(int id);
-//	
-//	public boolean createDepartment(Department dept);
-//	
-//	public boolean deleteDepartment(int id);
-//	
-//	public boolean updateDepartment(Department dept);
+	public List<Show> getAllShows();
+	
+	public Optional<Show> getShowById(int id);
+	
+	// Admin class that implements this interface will have create, update, and delete functions within its own class
+	
 	
 }
