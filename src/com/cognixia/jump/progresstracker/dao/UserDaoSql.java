@@ -3,6 +3,7 @@ package com.cognixia.jump.progresstracker.dao;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.cognixia.jump.connection.BetterConnectionManager;
+
 
 public class UserDaoSql implements UserDao {
 	
@@ -23,19 +25,17 @@ public class UserDaoSql implements UserDao {
 		
 	}
 
+	
 	@Override
-	// Obtains all the shows in the database for the user to see
-	public List<Show> getAllShows() {
+	public List<Show> getShows(String queryStatement) {
 		
-		// List to store all the current shows in the database
-		// This view will allow the user to pick and choose the shows they want to add to their list
-		// Different methods will be made to obtain shows pertaining to the user
+		// List to store all the current shows in the database or the user's show based on parameter
 		List<Show> showList = new ArrayList<Show>();
 		
 		try(Statement stmnt = conn.createStatement();
-			ResultSet rs = stmnt.executeQuery("select * from shows")
+			// We'll fill in the with the proper query later
+			ResultSet rs = stmnt.executeQuery(queryStatement);
 		   ){
-			
 			
 			while(rs.next()) {
 				
@@ -49,7 +49,6 @@ public class UserDaoSql implements UserDao {
 				showList.add(show);
 			}
 			
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -57,9 +56,50 @@ public class UserDaoSql implements UserDao {
 		return showList;
 	}
 
+	
 	@Override
 	public Optional<Show> getShowById(int id) {
-		// TODO Auto-generated method stub
+try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where Show_ID = ?")) {
+			
+			pstmt.setInt(1, id);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			
+			// rs.next() will return false if nothing found
+			// if you enter the if block, that show with that id was found
+			if(rs.next()) {
+				
+				int showId = rs.getInt("Show_ID");
+				String name = rs.getString("Name");
+				String descript = rs.getString("Descript");
+				int numEp = rs.getInt("TotalEps");
+				
+				rs.close();
+				
+				// constructing the object
+				Show currShow = new Show(showId, name, descript, numEp);
+				
+				// placing it in the optional
+				Optional<Show> showFound = Optional.of(dept);
+				
+				// return the optional
+				return showFound;
+			}
+			else {
+				// if you did not find the department with that id, return an empty optional
+				rs.close();
+				return Optional.empty();
+			}
+			
+			
+		} catch (SQLException e) {
+			
+			// just in case an exception occurs, return nothing in the optional
+			return Optional.empty();
+		} catch (Exception e) {
+			
+		}
 		return Optional.empty();
 	}
 
