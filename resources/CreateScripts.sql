@@ -22,3 +22,4 @@ primary key (UserID,ShowID),
 foreign key (UserID) references Users(UserID),
 foreign key (ShowID) references Shows(ShowID)
 );
+
