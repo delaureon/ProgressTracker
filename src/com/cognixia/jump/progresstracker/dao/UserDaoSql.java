@@ -81,7 +81,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 				Show currShow = new Show(showId, name, descript, numEp);
 				
 				// placing it in the optional
-				Optional<Show> showFound = Optional.of(dept);
+				Optional<Show> showFound = Optional.of(currShow);
 				
 				// return the optional
 				return showFound;
