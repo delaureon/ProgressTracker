@@ -1,14 +1,14 @@
 -- create database progresstracker;
 use progresstracker;
 create table Users(
-UserID int primary key,
+UserID int auto_increment primary key ,
 UserName varchar(255),
 Password varchar(255),
 RoleType int
 );
 
 create table Shows(
-ShowID int primary key,
+ShowID int auto_increment primary key ,
 Name varchar(255),
 Descript text,
 TotalEps int);
