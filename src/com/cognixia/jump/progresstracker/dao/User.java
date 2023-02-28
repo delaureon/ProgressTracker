@@ -1,4 +1,4 @@
-package com.cognixia.jump.dao;
+package com.cognixia.jump.progresstracker.dao;
 
 public class User {
 
