@@ -25,18 +25,16 @@ public class UserDaoSql implements UserDao {
 		
 	}
 
+	
 	@Override
-	// Obtains all the shows in the database for the user to see
-	public List<Show> getUserShows() {
+	public List<Show> getShows(String queryStatement) {
 		
-		// List to store all the current shows in the database
-		// This view will allow the user to pick and choose the shows they want to add to their list
-		// Different methods will be made to obtain shows pertaining to the user
+		// List to store all the current shows in the database or the user's show based on parameter
 		List<Show> showList = new ArrayList<Show>();
 		
 		try(Statement stmnt = conn.createStatement();
 			// We'll fill in the with the proper query later
-			ResultSet rs = stmnt.executeQuery("")
+			ResultSet rs = stmnt.executeQuery(queryStatement);
 		   ){
 			
 			while(rs.next()) {
@@ -58,6 +56,7 @@ public class UserDaoSql implements UserDao {
 		return showList;
 	}
 
+	
 	@Override
 	public Optional<Show> getShowById(int id) {
 try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where Show_ID = ?")) {

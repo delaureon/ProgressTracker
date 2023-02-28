@@ -12,7 +12,8 @@ public interface UserDao {
 	
 	public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException;
 	
-	public List<Show> getUserShows();
+	// Obtains the list of user shows
+	public List<Show> getShows(String queryStatement);
 	
 	public Optional<Show> getShowById(int id);
 	
