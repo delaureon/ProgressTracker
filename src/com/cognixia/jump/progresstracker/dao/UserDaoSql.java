@@ -27,7 +27,7 @@ public class UserDaoSql implements UserDao {
 
 	@Override
 	// Obtains all the shows in the database for the user to see
-	public List<Show> getAllShows() {
+	public List<Show> getUserShows() {
 		
 		// List to store all the current shows in the database
 		// This view will allow the user to pick and choose the shows they want to add to their list
@@ -35,9 +35,9 @@ public class UserDaoSql implements UserDao {
 		List<Show> showList = new ArrayList<Show>();
 		
 		try(Statement stmnt = conn.createStatement();
-			ResultSet rs = stmnt.executeQuery("select * from shows")
+			// We'll fill in the with the proper query later
+			ResultSet rs = stmnt.executeQuery("")
 		   ){
-			
 			
 			while(rs.next()) {
 				
@@ -50,7 +50,6 @@ public class UserDaoSql implements UserDao {
 				
 				showList.add(show);
 			}
-			
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -80,13 +79,13 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 				rs.close();
 				
 				// constructing the object
-				Show dept = new Show(showId, name, descript, numEp);
+				Show currShow = new Show(showId, name, descript, numEp);
 				
 				// placing it in the optional
-				Optional<Show> deptFound = Optional.of(dept);
+				Optional<Show> showFound = Optional.of(dept);
 				
 				// return the optional
-				return deptFound;
+				return showFound;
 			}
 			else {
 				// if you did not find the department with that id, return an empty optional

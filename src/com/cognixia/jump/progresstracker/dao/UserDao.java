@@ -12,7 +12,7 @@ public interface UserDao {
 	
 	public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException;
 	
-	public List<Show> getAllShows();
+	public List<Show> getUserShows();
 	
 	public Optional<Show> getShowById(int id);
 	
