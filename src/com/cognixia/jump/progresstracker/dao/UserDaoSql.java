@@ -103,4 +103,50 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		return Optional.empty();
 	}
 
+
+	@Override
+	public Optional<User> authenticateUser(String username, String password) {
+		
+		try(PreparedStatement pstmnt = conn.prepareStatement("select * from users where username = ? and password = ?")) {
+			
+			pstmnt.setString(1, username);
+			pstmnt.setString(2, password);
+			
+			ResultSet rs = pstmnt.executeQuery();
+			
+			int id = 0;
+			String uName = null;
+			String pwd = null;
+			int role = 0;
+			
+			while(rs.next()) {
+				
+				 id = rs.getInt("userid");
+				 uName = rs.getString("username");
+				 pwd = rs.getString("password");
+				 role = rs.getInt("roletype");
+			}
+			
+			
+			User user = new User(id, uName, pwd);
+			
+			Optional<User> userFound = Optional.of(user);
+			
+			return userFound;
+			
+			
+		} catch (Exception e) {
+			// TODO:
+		}
+		
+		return Optional.empty();
+	}
+
+
+	@Override
+	public boolean updateShowProgress() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
