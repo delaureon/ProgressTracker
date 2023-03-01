@@ -1,44 +1,77 @@
 package com.cognixia.jump.progresstracker;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.invoke.WrongMethodTypeException;
-
+import java.sql.SQLException;
 import java.util.Scanner;
+
+import com.cognixia.jump.progresstracker.dao.UserDao;
+import com.cognixia.jump.progresstracker.dao.UserDaoSql;
 
 //import com.cognixia.jump.progresstracker.dao.*;
 
 public class ProgressTrackerDriver {
-
+	
 	public static void main(String[] args) {
 		
 		Scanner scan = new Scanner(System.in);
-		int role = 0;
 		String username = "";
 		String password = "";
+		String quit = "";
 		System.out.println("Welcome to the TV Show Tracker!");
-		while (!scan.equals("quit")) {
+		while (!quit.equals("quit")) {
 			try {
 				do {
-					System.out.println("Please enter 0 if you're a user or 1 if you're an admin:");
-					role = scan.nextInt();
 					System.out.println("What is your username?");
-					username = scan.nextLine();
+					username = scan.next();
 					System.out.println("What is your password?");
-					password = scan.nextLine();
-					checkUser(role, username, password);
-					if (checkUser(role, username, password) == false) {
+					password = scan.next();
+					checkUser(username, password);
+					if (checkUser(username, password) == false) {
 						System.out.println("The data you have entered does not match. Please try again.");
 					}
-				} while (checkUser(role, username, password) != true);
+					System.out.println("Do you want to continue?");
+					quit = scan.next();
+					
+					
+				} while (checkUser(username, password) != true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	public static boolean checkUser(int role, String username, String password) {
+	public static boolean checkUser(String username, String password) {
 		// check user data with database
+		UserDao userDao = new UserDaoSql();
+		try {
+			userDao.setConnection();
+			userDao.authenticateUser(username, password);
+//			System.out.println(userDao.authenticateUser(username, password));
+			
+			return true;
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// UserDaoSql object here
+		// Save user with user class
+		
+		
 		// return true;
 		return false;
 	}
-
+	
 }

@@ -17,6 +17,12 @@ public interface UserDao {
 	
 	public Optional<Show> getShowById(int id);
 	
+	public Optional<User> authenticateUser(String username, String password);
+	
+
+	// This will be used to allow the user to categorize into not started, in-progress, or completed
+	public boolean updateShowProgress();
+	
 	// Admin class that implements this interface will have create, update, and delete functions within its own class
 	
 	
