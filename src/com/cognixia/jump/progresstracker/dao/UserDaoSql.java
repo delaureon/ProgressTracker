@@ -128,7 +128,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			}
 			
 			
-			User user = new User(id, uName, pwd);
+			User user = new User(id, uName, pwd, role);
 			
 			Optional<User> userFound = Optional.of(user);
 			
