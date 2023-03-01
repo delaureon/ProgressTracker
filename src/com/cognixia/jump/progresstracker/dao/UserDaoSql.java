@@ -21,11 +21,9 @@ public class UserDaoSql implements UserDao {
 
 	@Override
 	public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException {
-		conn = BetterConnectionManager.getConnection();
-		
+		conn = BetterConnectionManager.getConnection();	
 	}
 
-	
 	@Override
 	public boolean getShows(int id) {
 		
@@ -33,14 +31,11 @@ public class UserDaoSql implements UserDao {
 				+ "from users join Users_Shows on users.UserID=Users_Shows.UserID "
 				+ "join Shows on Users_Shows.ShowID=Shows.ShowID "
 				+ "where users.UserID = ?")){
-			
-			
+				
+				// Obtain the shows for the currently logged on user
 				pstmt.setInt(1, id);
 				ResultSet rs = pstmt.executeQuery();
-				
-				
-				
-			
+	
 
 			while (rs.next()) {
 
@@ -50,7 +45,11 @@ public class UserDaoSql implements UserDao {
 				int rating = rs.getInt("Rating");
 				int totalEp = rs.getInt("totalEps");
 
-				System.out.println(showId + " " + name + " " + currEp + " " + rating + " " + totalEp);
+				System.out.println("Show ID: " + showId + " " 
+									+ "Title: " + name + " " 
+									+ "Episode: "+ currEp + "/" + totalEp + " "
+									+ "Rating: " + rating
+								  );
 			}
 			
 			return true;
@@ -62,7 +61,6 @@ public class UserDaoSql implements UserDao {
 		return false;
 	}
 
-	
 	@Override
 	public Optional<Show> getShowById(int id) {
 try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where Show_ID = ?")) {
@@ -109,12 +107,12 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		return Optional.empty();
 	}
 
-
 	@Override
 	public Optional<User> authenticateUser(String username, String password) {
 		
 		try(PreparedStatement pstmnt = conn.prepareStatement("select * from users where username = ? and password = ?")) {
 			
+			// Obtain username and password arguments and insert them into the prepare statement
 			pstmnt.setString(1, username);
 			pstmnt.setString(2, password);
 			
@@ -132,8 +130,6 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 				 pwd = rs.getString("password");
 				 role = rs.getInt("roletype");
 			}
-			
-			
 			User user = new User(id, uName, pwd, role);
 			
 			Optional<User> userFound = Optional.of(user);
@@ -142,17 +138,32 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			
 			
 		} catch (Exception e) {
-			// TODO:
+			e.printStackTrace();
 		}
 		
 		return Optional.empty();
 	}
 
 
+	
 	@Override
-	public boolean updateShowProgress() {
+	public boolean updateShows(int id) {
+		
+		System.out.println();
+		
+		
+		return false;
+	}
+	
+
+
+	@Override
+	public boolean addShows(int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
+	
 
 }

@@ -9,6 +9,13 @@ public class User {
 	private String password;
 	private int roleType;
 	
+	public User() {
+		this.userId = -1;
+		this.username = null;
+		this.password = null;
+		this.roleType = -1;
+	}
+	
 	public User(int userId, String username, String password, int roleType) {
 		super();
 		this.userId = userId;

@@ -4,8 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.invoke.WrongMethodTypeException;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Scanner;
 
+import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
 import com.cognixia.jump.progresstracker.dao.UserDaoSql;
 import com.cognixia.jump.progresstracker.dao.UserShowDaoSql;
@@ -16,48 +18,46 @@ public class ProgressTrackerDriver {
 	
 	public static void main(String[] args) {
 		
-		Scanner scan = new Scanner(System.in);
-		String username = "";
-		String password = "";
-		String quit = "";
+		String username = null;
+		String password = null;
 		System.out.println("Welcome to the TV Show Tracker!");
-		while (!quit.equals("quit")) {
-			try {
-				do {
-					System.out.println("What is your username?");
-					username = scan.next();
-					System.out.println("What is your password?");
-					password = scan.next();
-					checkUser(username, password);
-					if (checkUser(username, password) == false) {
-						System.out.println("The data you have entered does not match. Please try again.");
-					}
-					System.out.println("Do you want to continue?");
-					quit = scan.next();
-					
-					
-				} while (checkUser(username, password) != true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
 	
-	public static boolean checkUser(String username, String password) {
+		// Use try-with-resources to automatically close scanner
+		try(Scanner scan = new Scanner(System.in)) {
+			
+				System.out.println("What is your username?");
+				username = scan.next();
+				System.out.println("What is your password?");
+				password = scan.next();
+				User u1 = checkUser(username, password);
+				printUserShows(u1.getUserId());
+				
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		}
+
+	
+	public static User checkUser(String username, String password) {
 		// check user data with database
 		UserDao userDao = new UserDaoSql();
-//		UserShowDaoSql userShowDao = new UserShowDaoSql();
+		User validUser = new User();
+		
 		try {
+			// Connects to the database
 			userDao.setConnection();
-			userDao.authenticateUser(username, password);
 			
+			// authenticate user and return user if authentication went well
+			Optional<User> currUser = userDao.authenticateUser(username, password);
 			
-			userDao.getShows(2);
+			// We can create a custom exception if the user is not found
+			if(currUser.isEmpty()) {
+//				throw UserNotFoundException();
+			}
 			
-//			userShowDao.getUserShows(1);
-			
-			
-			return true;
+			validUser = currUser.get();
+			return validUser;
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -74,7 +74,18 @@ public class ProgressTrackerDriver {
 		}
 		
 
-		return false;
+		return validUser;
 	}
-	
+
+	public static void printUserShows(int id) {
+		
+		UserDao userDao = new UserDaoSql();
+		
+		try {
+			userDao.setConnection();
+			userDao.getShows(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
