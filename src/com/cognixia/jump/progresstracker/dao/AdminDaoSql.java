@@ -13,7 +13,8 @@ import java.util.Optional;
 
 import com.cognixia.jump.connection.BetterConnectionManager;
 
-public class AdminDaoSql implements AdminDao {
+public class AdminDaoSql  implements AdminDao {
+	
 	private Connection conn;
 	@Override
 	public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException {
