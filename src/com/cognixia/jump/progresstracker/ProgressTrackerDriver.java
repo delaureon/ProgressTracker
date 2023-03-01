@@ -18,28 +18,6 @@ public class ProgressTrackerDriver {
 		while (!scan.equals("quit")) {
 			try {
 				
-				do {
-//					System.out.println("Please enter 0 if you're a user or 1 if you're an admin:");
-//					role = scan.nextInt();
-					System.out.println("What is your username?");
-					username = scan.next();
-					System.out.println("What is your password?");
-					password = scan.next();
-					checkUser(username, password);
-					if (checkUser(username, password) == null) {
-						System.out.println("The data you have entered does not match. Please try again.");
-					}
-				} while (checkUser(username, password) != null);
-				
-				User user = checkUser(username, password);
-				
-				// 
-				
-				
-				
-				
-				
-				
 				
 				
 				
