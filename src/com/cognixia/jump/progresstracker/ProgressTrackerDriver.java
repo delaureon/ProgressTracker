@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import com.cognixia.jump.progresstracker.dao.UserDao;
 import com.cognixia.jump.progresstracker.dao.UserDaoSql;
+import com.cognixia.jump.progresstracker.dao.UserShowDaoSql;
 
 //import com.cognixia.jump.progresstracker.dao.*;
 
@@ -45,10 +46,16 @@ public class ProgressTrackerDriver {
 	public static boolean checkUser(String username, String password) {
 		// check user data with database
 		UserDao userDao = new UserDaoSql();
+//		UserShowDaoSql userShowDao = new UserShowDaoSql();
 		try {
 			userDao.setConnection();
 			userDao.authenticateUser(username, password);
-//			System.out.println(userDao.authenticateUser(username, password));
+			
+			
+			userDao.getShows(2);
+			
+//			userShowDao.getUserShows(1);
+			
 			
 			return true;
 			
@@ -66,11 +73,7 @@ public class ProgressTrackerDriver {
 			e.printStackTrace();
 		}
 		
-		// UserDaoSql object here
-		// Save user with user class
-		
-		
-		// return true;
+
 		return false;
 	}
 	
