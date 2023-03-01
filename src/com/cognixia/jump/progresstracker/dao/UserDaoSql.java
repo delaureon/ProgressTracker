@@ -27,33 +27,39 @@ public class UserDaoSql implements UserDao {
 
 	
 	@Override
-	public List<Show> getShows(String queryStatement) {
+	public boolean getShows(int id) {
 		
-		// List to store all the current shows in the database or the user's show based on parameter
-		List<Show> showList = new ArrayList<Show>();
-		
-		try(Statement stmnt = conn.createStatement();
-			// We'll fill in the with the proper query later
-			ResultSet rs = stmnt.executeQuery(queryStatement);
-		   ){
+		try (PreparedStatement pstmt = conn.prepareStatement("select Users_Shows.ShowID showid, Name, CurrentEp,Rating , totalEps, ((CurrentEp /totalEps)*100) as percentcomplete "
+				+ "from users join Users_Shows on users.UserID=Users_Shows.UserID "
+				+ "join Shows on Users_Shows.ShowID=Shows.ShowID "
+				+ "where users.UserID = ?")){
 			
-			while(rs.next()) {
+			
+				pstmt.setInt(1, id);
+				ResultSet rs = pstmt.executeQuery();
 				
-				int showId = rs.getInt("Show_ID");
+				
+				
+			
+
+			while (rs.next()) {
+
+				int showId = rs.getInt("showid");
 				String name = rs.getString("Name");
-				String descript = rs.getString("Descript");
-				int numEp = rs.getInt("TotalEps");
-				
-				Show show = new Show(showId, name, descript, numEp);
-				
-				showList.add(show);
+				int currEp = rs.getInt("CurrentEp");
+				int rating = rs.getInt("Rating");
+				int totalEp = rs.getInt("totalEps");
+
+				System.out.println(showId + " " + name + " " + currEp + " " + rating + " " + totalEp);
 			}
 			
-		} catch(Exception e) {
+			return true;
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
-		return showList;
+
+		return false;
 	}
 
 	
