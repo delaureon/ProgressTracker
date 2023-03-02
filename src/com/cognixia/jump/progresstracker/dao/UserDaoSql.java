@@ -139,7 +139,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			User user = new User(id, uName, pwd, role);
 			
 			Optional<User> userFound = Optional.of(user);
-			System.out.println("Welcome "+ uName +"!" +"\n\n");
+//			System.out.println("Welcome "+ uName +"!" +"\n\n");
 			return userFound;
 			
 			
