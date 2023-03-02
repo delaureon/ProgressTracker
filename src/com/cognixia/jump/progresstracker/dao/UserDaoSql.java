@@ -69,7 +69,7 @@ public class UserDaoSql implements UserDao {
 
 	@Override
 	public Optional<Show> getShowById(int id) {
-try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where Show_ID = ?")) {
+try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where ShowID = ?")) {
 			
 			pstmt.setInt(1, id);
 			
@@ -80,7 +80,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			// if you enter the if block, that show with that id was found
 			if(rs.next()) {
 				
-				int showId = rs.getInt("Show_ID");
+				int showId = rs.getInt("ShowID");
 				String name = rs.getString("Name");
 				String descript = rs.getString("Descript");
 				int numEp = rs.getInt("TotalEps");
@@ -154,11 +154,12 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 	
 	@Override
 	public boolean updateShows(UserShow show) {
-		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=?")){
+		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=? and ShowID = ?")){
 		pstmt.setInt(1, show.getProgressID());
 		pstmt.setInt(2,show.getRating());
 		pstmt.setInt(3, show.getCurrEp());
 		pstmt.setInt(4, show.getUserID());
+		pstmt.setInt(5, show.getShowID());
 		int count=pstmt.executeUpdate();
 		if( count>0) return true;
 		
@@ -173,12 +174,17 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 
 	@Override
 	public boolean addShows(UserShow show) {
-		try(PreparedStatement pstmt=conn.prepareStatement("Insert into Users_Shows values (?,?,?,?,?");){
+		try(PreparedStatement pstmt=conn.prepareStatement("Insert into Users_Shows values (?,?,?,?,?)");){
 			pstmt.setInt(1, show.getUserID());
 			pstmt.setInt(2, show.getShowID());
 			pstmt.setInt(3, show.getProgressID());
 			pstmt.setInt(4, show.getRating());
 			pstmt.setInt(5, show.getCurrEp());
+			
+			int count=pstmt.executeUpdate();
+			if(count>0) {
+				return true;
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

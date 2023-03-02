@@ -14,6 +14,7 @@ import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
 import com.cognixia.jump.progresstracker.dao.UserDaoSql;
 import com.cognixia.jump.progresstracker.dao.UserNotFoundException;
+import com.cognixia.jump.progresstracker.dao.UserShow;
 import com.cognixia.jump.progresstracker.dao.UserShowDaoSql;
 
 //import com.cognixia.jump.progresstracker.dao.*;
@@ -217,10 +218,21 @@ public class ProgressTrackerDriver {
 				int showId = scan.nextInt();
 				int userId = user.getUserId();
 				
-				System.out.println("Where would you like to add it?");
+				System.out.println("What's your progress on the show?");
 				String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
 				System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
-				int choice = scan.nextInt();
+				int progressId = scan.nextInt();
+				
+				System.out.println("What would you rate the show (1-5)? ");
+				int rating = scan.nextInt();
+				
+				System.out.println("What episode are you on?");
+				int currEp = scan.nextInt();
+				
+				UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
+				userDao.addShows(userShow);
+				
+				userDao.getShows(user.getUserId());
 				
 				
 				
@@ -230,10 +242,44 @@ public class ProgressTrackerDriver {
 				System.out.println("\nUpdate progress by Show ID: ");
 				int showId = scan.nextInt();
 				Optional<Show> currShow = userDao.getShowById(showId);
+				System.out.println(currShow.get());
 				
 				if(currShow.isPresent()) {
 					Show validShow = currShow.get();
-					userDao.updateShows(showId);
+					
+					System.out.println("\nWhat would you like to update?");
+					String option4 = "1-Progress", option5 = "2-Rating", option6 = "3-Current Episode";
+					System.out.printf("%-20s %-20s %-20s\n", option4, option5, option6);
+					int choice = scan.nextInt();
+					
+					
+					if(choice == 1) {
+						
+						System.out.println("What is you current progress?");
+						String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
+						System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
+						int progressId = scan.nextInt();
+						
+//						UserShow userShow = new UserShow(user.getUserId(), validShow.getId(), progressId ,  );
+						
+						
+						
+					} else if (choice == 2) {
+						System.out.println("How would you rate the show (1-5)?");
+						int rating = scan.nextInt();
+						
+					} else if (choice == 3) {
+						System.out.println("What episode are you currently on?");
+						int currEp = scan.nextInt();
+						
+					}
+					
+					
+					
+					
+
+					
+//					userDao.updateShows(userShow);
 					
 				} else {
 					// Exception here?
