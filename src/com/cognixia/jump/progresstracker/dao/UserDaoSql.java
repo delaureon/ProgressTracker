@@ -168,6 +168,33 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		return false;
 	}
 
+	@Override
+	public boolean getAllShows() {
+		
+		try(Statement stmnt = conn.createStatement();
+				ResultSet rs = stmnt.executeQuery("select * from shows")
+			   ){
+				System.out.printf("%10s %20s %20s %20s", "Show ID","Name", "Total Episodes","Description");
+				System.out.println("\n----------------------------------------------------------------------------------------------------------------");		
+				while(rs.next()) {
+					
+					int showId = rs.getInt("ShowID");
+					String name = rs.getString("Name");
+					String descript = rs.getString("Descript");
+					int numEp = rs.getInt("TotalEps");
+					
+					System.out.printf("%10s %20s %20s %-10s%n", showId,name,numEp, descript);	
+					
+				}
+				
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		
+		
+		return false;
+	}
+
 
 	
 
