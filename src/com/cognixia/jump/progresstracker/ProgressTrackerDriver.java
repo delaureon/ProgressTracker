@@ -51,10 +51,7 @@ public class ProgressTrackerDriver {
 					 System.out.print("Show Name: ");
 					 String sName=scan.nextLine();
 					 scan.nextLine();
-					 System.out.println("Description: ");
-
-					 String desc=scan.next();
-
+					 System.out.print("Description: ");
 					 String desc=scan.nextLine();
 
 					 System.out.println("Number of Episodes:");
