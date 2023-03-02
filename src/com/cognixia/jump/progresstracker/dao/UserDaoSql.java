@@ -153,19 +153,36 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 
 	
 	@Override
-	public boolean updateShows(int id) {
+	public boolean updateShows(UserShow show) {
+		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=?")){
+		pstmt.setInt(1, show.getProgressID());
+		pstmt.setInt(2,show.getRating());
+		pstmt.setInt(3, show.getCurrEp());
+		pstmt.setInt(4, show.getUserID());
+		int count=pstmt.executeUpdate();
+		if( count>0) return true;
 		
-		System.out.println();
-		
-		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 	
 
 
 	@Override
-	public boolean addShows(int id) {
-		// TODO Auto-generated method stub
+	public boolean addShows(UserShow show) {
+		try(PreparedStatement pstmt=conn.prepareStatement("Insert into Users_Shows values (?,?,?,?,?");){
+			pstmt.setInt(1, show.getUserID());
+			pstmt.setInt(2, show.getShowID());
+			pstmt.setInt(3, show.getProgressID());
+			pstmt.setInt(4, show.getRating());
+			pstmt.setInt(5, show.getCurrEp());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 
