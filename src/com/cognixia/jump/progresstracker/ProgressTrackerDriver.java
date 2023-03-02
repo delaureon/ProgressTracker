@@ -13,6 +13,7 @@ import com.cognixia.jump.progresstracker.dao.Show;
 import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
 import com.cognixia.jump.progresstracker.dao.UserDaoSql;
+import com.cognixia.jump.progresstracker.dao.UserNotFoundException;
 import com.cognixia.jump.progresstracker.dao.UserShowDaoSql;
 
 //import com.cognixia.jump.progresstracker.dao.*;
@@ -85,13 +86,15 @@ public class ProgressTrackerDriver {
 
 			// We can create a custom exception if the user is not found
 			if (currUser.isEmpty()) {
-//				throw UserNotFoundException();
+				throw new UserNotFoundException();
 			}
 
 			validUser = currUser.get();
 			return validUser;
 
-		} catch (FileNotFoundException e) {
+		} catch (UserNotFoundException e) {
+			System.out.println(e.getMessage());
+		}  catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
