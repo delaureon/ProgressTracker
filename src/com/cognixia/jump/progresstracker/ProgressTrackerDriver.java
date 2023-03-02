@@ -28,9 +28,9 @@ public class ProgressTrackerDriver {
 		// Use try-with-resources to automatically close scanner
 		try (Scanner scan = new Scanner(System.in)) {
 
-			System.out.println("What is your username?");
+			System.out.print("Username:");
 			username = scan.next();
-			System.out.println("What is your password?");
+			System.out.print("Password:");
 			password = scan.next();
 			User u1 = checkUser(username, password);
 			if (u1.getRoleType() == 0) {
@@ -46,7 +46,7 @@ public class ProgressTrackerDriver {
 					 String sName=scan.next();
 					 System.out.print("Description: ");
 					 String desc=scan.next();
-					 System.out.println("Number of Episodes:");
+					 System.out.print("Number of Episodes:");
 					 int numEps=scan.nextInt();
 					 Show s1=new Show(sName,desc,numEps);
 					 a1.createShow(s1);
