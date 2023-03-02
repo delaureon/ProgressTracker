@@ -199,7 +199,7 @@ public class ProgressTrackerDriver {
 
 	public static void promptUserActions(User user) {
 		
-		String option1 = "1-Add Shows", option2 = "2-Update Progress";
+		String option1 = "1-Add Show", option2 = "2-Update Progress";
 		System.out.println("\nWhat would you like to do?");
 		System.out.printf("%-20s %-20s\n", option1, option2);
 		UserDao userDao = new UserDaoSql();
@@ -220,7 +220,23 @@ public class ProgressTrackerDriver {
 				
 				
 				
+			}else if(input == 2) {
+				// Gets all the shows so user knows which one to update
+				userDao.getAllShows();
+				System.out.println("\nUpdate progress by Show ID: ");
+				int showId = scan.nextInt();
+				Optional<Show> currShow = userDao.getShowById(showId);
+				
+				if(currShow.isPresent()) {
+					Show validShow = currShow.get();
+					userDao.updateShows(showId);
+					
+				} else {
+					// Exception here?
+				}
+				
 			}
+			
 			
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
