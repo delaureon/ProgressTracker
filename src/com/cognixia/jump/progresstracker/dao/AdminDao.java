@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface AdminDao {
 	public void setConnection() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException;
-	public List<Show> getAllShows();
+	public void getAllShows();
 	public boolean createShow(Show show);
 	public boolean deleteShow(int id);
 	public boolean updateShow(Show show);

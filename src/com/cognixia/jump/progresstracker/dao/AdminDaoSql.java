@@ -22,39 +22,38 @@ public class AdminDaoSql  implements AdminDao {
 	}
 
 	@Override
-	public List<Show> getAllShows() {
+	public void getAllShows() {
 
-		List<Show> showList = new ArrayList<Show>();		
+			
 		try(Statement stmnt = conn.createStatement();
 			ResultSet rs = stmnt.executeQuery("select * from shows")
 		   ){
-					
+			System.out.printf("%10s %20s %20s %20s", "Show ID","Name", "Total Episodes","Description");
+			System.out.println("\n----------------------------------------------------------------------------------------------------------------");		
 			while(rs.next()) {
 				
-				int showId = rs.getInt("Show_ID");
+				int showId = rs.getInt("ShowID");
 				String name = rs.getString("Name");
 				String descript = rs.getString("Descript");
 				int numEp = rs.getInt("TotalEps");
 				
-				Show show = new Show(showId, name, descript, numEp);
+				System.out.printf("%10s %20s %20s %-10s%n", showId,name,numEp, descript);	
 				
-				showList.add(show);
-			}		
+			}
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	
-		return showList;
-	
+		
 	}
 
 	@Override
 	public boolean createShow(Show show) {
-		try(PreparedStatement pstmt=conn.prepareStatement("Insert into Shows values null,?,?,?")){
-		pstmt.setString(2,show.getShowName());
-		pstmt.setString(3,show.getDesc());
-		pstmt.setInt(4,show.getNumEp());
+		try(PreparedStatement pstmt=conn.prepareStatement("Insert into Shows values (null,?,?,?)")){
+		pstmt.setString(1,show.getShowName());
+		pstmt.setString(2,show.getDesc());
+		pstmt.setInt(3,show.getNumEp());
 		int count=pstmt.executeUpdate();
 		if(count>0) {
 			return true;

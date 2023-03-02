@@ -35,8 +35,9 @@ public class UserDaoSql implements UserDao {
 				// Obtain the shows for the currently logged on user
 				pstmt.setInt(1, id);
 				ResultSet rs = pstmt.executeQuery();
-	
-
+//	
+				System.out.printf("%10s %20s %20s %15s %15s %20s", "Show ID","Name", "Current Episode", "Rating","Total Episodes", "Percent Complete");
+				System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 			while (rs.next()) {
 
 				int showId = rs.getInt("showid");
@@ -44,12 +45,16 @@ public class UserDaoSql implements UserDao {
 				int currEp = rs.getInt("CurrentEp");
 				int rating = rs.getInt("Rating");
 				int totalEp = rs.getInt("totalEps");
-
-				System.out.println("Show ID: " + showId + " " 
-									+ "Title: " + name + " " 
-									+ "Episode: "+ currEp + "/" + totalEp + " "
-									+ "Rating: " + rating
-								  );
+				int percComp=rs.getInt("percentcomplete");
+				
+				System.out.printf("%10s %20s %20s %15s %15d %20c%n", showId, name, currEp, rating,totalEp,percComp);
+//				System.out.println("Show ID: " + showId + " " 
+//									+ "Title: " + name + " " 
+//									+ "Episode: "+ currEp + "/" + totalEp + " "
+//									+ "Rating: " + rating
+//								  );
+//				
+				
 			}
 			
 			return true;
@@ -133,7 +138,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			User user = new User(id, uName, pwd, role);
 			
 			Optional<User> userFound = Optional.of(user);
-			
+			System.out.println("Welcome "+ uName +"!" +"\n\n");
 			return userFound;
 			
 			
