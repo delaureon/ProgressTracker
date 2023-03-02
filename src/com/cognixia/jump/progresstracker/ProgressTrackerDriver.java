@@ -233,7 +233,7 @@ public class ProgressTrackerDriver {
 				
 				if(currShow.isPresent()) {
 					Show validShow = currShow.get();
-					userDao.updateShows(showId);
+					//userDao.updateShows(validShow);
 					
 				} else {
 					// Exception here?

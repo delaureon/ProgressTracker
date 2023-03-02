@@ -19,6 +19,7 @@ public interface UserDao {
 	
 	public Optional<Show> getShowById(int id);
 	
+	public Optional<UserShow> getUserShow(int userID, int showID);
 	public Optional<User> authenticateUser(String username, String password);
 	
 	public boolean addShows(UserShow show);

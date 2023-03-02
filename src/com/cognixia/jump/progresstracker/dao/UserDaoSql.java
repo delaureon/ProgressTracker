@@ -213,6 +213,56 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		return false;
 	}
 
+	@Override
+	public Optional<UserShow> getUserShow(int userID, int showID) {
+		
+
+try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where ShowID = ? and UserID=?")) {
+			
+			pstmt.setInt(1, userID);
+			pstmt.setInt(2, showID);
+			ResultSet rs = pstmt.executeQuery();
+			
+			
+			// rs.next() will return false if nothing found
+			// if you enter the if block, that show with that id was found
+			if(rs.next()) {
+				int uID=rs.getInt("UserID");
+				int showId = rs.getInt("ShowID");
+				int progressID=rs.getInt("ProgressID");
+				int rating = rs.getInt("rating");
+				int currentEp = rs.getInt("CurrentEp");
+				
+				rs.close();
+				
+				// constructing the object
+				UserShow userShow = new UserShow(uID,showId, progressID, rating, currentEp);
+				
+				// placing it in the optional
+				Optional<UserShow> showFound = Optional.of(userShow);
+				
+				// return the optional
+				return showFound;
+			}
+			else {
+				// if you did not find the department with that id, return an empty optional
+				rs.close();
+				return Optional.empty();
+			}
+			
+			
+		} catch (SQLException e) {
+			
+			// just in case an exception occurs, return nothing in the optional
+			return Optional.empty();
+		} catch (Exception e) {
+			
+		}
+
+
+		return Optional.empty();
+	}
+
 
 	
 
