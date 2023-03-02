@@ -27,27 +27,28 @@ public class UserDaoSql implements UserDao {
 	@Override
 	public boolean getShows(int id) {
 		
-		try (PreparedStatement pstmt = conn.prepareStatement("select Users_Shows.ShowID showid, Name, CurrentEp,Rating , totalEps, ((CurrentEp /totalEps)*100) as percentcomplete "
-				+ "from users join Users_Shows on users.UserID=Users_Shows.UserID "
-				+ "join Shows on Users_Shows.ShowID=Shows.ShowID "
-				+ "where users.UserID = ?")){
+		try (PreparedStatement pstmt = conn.prepareStatement("select Users_Shows.ShowID, progress.progress,Users.Userid,Name, CurrentEp,Rating , totalEps, ((CurrentEp /totalEps)*100) as percentcomplete from users join Users_Shows on users.UserID=Users_Shows.UserID"
+				+ " join progress on Users_Shows.ProgressID=progress.ProgressID"
+				+ " join Shows on Users_Shows.ShowID=Shows.ShowID"
+				+ " where USers.userid=?;")){
 				
 				// Obtain the shows for the currently logged on user
 				pstmt.setInt(1, id);
 				ResultSet rs = pstmt.executeQuery();
 //	
-				System.out.printf("%10s %20s %20s %15s %15s %20s", "Show ID","Name", "Current Episode", "Rating","Total Episodes", "Percent Complete");
+				System.out.printf("%10s %20s %20s %20s %15s %15s %20s", "Show ID","Name", "Current Episode","Progress", "Rating","Total Episodes", "Percent Complete");
 				System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 			while (rs.next()) {
 
 				int showId = rs.getInt("showid");
 				String name = rs.getString("Name");
 				int currEp = rs.getInt("CurrentEp");
+				String progress=rs.getString("progress");
 				int rating = rs.getInt("Rating");
 				int totalEp = rs.getInt("totalEps");
 				int percComp=rs.getInt("percentcomplete");
 				
-				System.out.printf("%10s %20s %20s %15s %15d %20c%n", showId, name, currEp, rating,totalEp,percComp);
+				System.out.printf("%10s %20s %20s %20s %15s %15d %20d%n", showId, name, currEp,progress, rating,totalEp,percComp);
 //				System.out.println("Show ID: " + showId + " " 
 //									+ "Title: " + name + " " 
 //									+ "Episode: "+ currEp + "/" + totalEp + " "
