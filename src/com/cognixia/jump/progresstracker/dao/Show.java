@@ -13,6 +13,12 @@ public Show(int id, String showName, String desc, int numEp) {
 	this.NumEp = numEp;
 	
 }
+
+public Show(String showName, String desc, int numEp) {
+	this.showName = showName;
+	this.desc = desc;
+	this.NumEp = numEp;
+}
 public int getId() {
 	return id;
 }
