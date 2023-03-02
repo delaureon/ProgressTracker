@@ -202,30 +202,31 @@ public class ProgressTrackerDriver {
 
 	public static void promptUserActions(User user) {
 		
-		String option1 = "1-Add Show", option2 = "2-Update Progress";
+		String option1 = "1-Add Show", option2 = "2-Update Progress", option3 = "q-Quit";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s\n", option1, option2);
+		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
 		UserDao userDao = new UserDaoSql();
 		
 		try(Scanner scan = new Scanner(System.in)) {
 			userDao.setConnection();
-			int input = scan.nextInt();
+			String input = scan.next();
 			
-			if(input == 1) {
+			if(input.equals("1")) {
 				userDao.getAllShows();
 				System.out.print("\nAdd show by ID: ");
 				int showId = scan.nextInt();
 				int userId = user.getUserId();
 				
+				System.out.println("Where would you like to add it?");
 				String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
 				System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
 				int choice = scan.nextInt();
 				
 				
 				
-			}else if(input == 2) {
-				// Gets all the shows so user knows which one to update
-				userDao.getAllShows();
+			} else if(input.equals("2")) {
+				// Gets all the user shows so user knows which one to update
+				userDao.getShows(user.getUserId());
 				System.out.println("\nUpdate progress by Show ID: ");
 				int showId = scan.nextInt();
 				Optional<Show> currShow = userDao.getShowById(showId);
@@ -238,6 +239,8 @@ public class ProgressTrackerDriver {
 					// Exception here?
 				}
 				
+			} else if(input.equals("q")) {
+				System.out.println("Exiting program...");
 			}
 			
 			
