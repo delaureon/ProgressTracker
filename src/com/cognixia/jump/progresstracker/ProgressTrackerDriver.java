@@ -37,31 +37,50 @@ public class ProgressTrackerDriver {
 			System.out.print("Password: ");
 			password = scan.next();
 			User u1 = checkUser(username, password);
+			
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
-				promptUserActions();
+				promptUserActions(u1);
+				
+				
+				
+				
+				
+				
+				
 				
 			} else {
 				do {
 					AdminDaoSql a1=new AdminDaoSql();
 					a1.setConnection();
-					a1.getAllShows();
-					System.out.println("Press 1 to add a new show to your list or 2 to update a status");
-					menuChoice = scan.next();
-					scan.nextLine();
+					menuChoice = promptAdminActions(scan);
+					
+					
+					//------------------
+					// CREATE NEW SHOW
+					//------------------
 					if (menuChoice.equals("1")) {
+						
 					 System.out.print("Show Name: ");
 					 String sName=scan.nextLine();
+					 
 					 System.out.print("Description: ");
 					 String desc=scan.nextLine();
 
 					 System.out.println("Number of Episodes:");
 					 int numEps=scan.nextInt();
+					 
 					 Show s1=new Show(sName,desc,numEps);
 					 a1.createShow(s1);
 					 a1.getAllShows();
+					 
+					 
+					//------------------
+					// UPDATE SHOW
+					//------------------
 					} else if (menuChoice.equals("2")) {
 						
+						a1.getAllShows();
 						System.out.print("Enter Show ID for update: ");
 						int id = scan.nextInt();
 						Optional<Show> show = a1.getShowById(id);
@@ -90,18 +109,36 @@ public class ProgressTrackerDriver {
 								validShow.setNumEp(totalNum);
 							}
 							
-							
-							
+
 							a1.updateShow(validShow);
 						} else {
 							System.out.println("Invalid show entered");
 						}
 						
+				
+					//------------------
+					// DELETE SHOW
+					//------------------
+					} else if (menuChoice.equals("3")){
 						
+						a1.getAllShows();
+						System.out.println("Enter Show ID to delete: ");
+						int id = scan.nextInt();
 						
+						boolean deleted = a1.deleteShow(id);	
+						
+						if(deleted) {
+							System.out.println("Deleted successfully");
+						}else {
+							System.out.println("Could not delete");
+						}
+						
+					} else if(menuChoice.equals("q")) {
+						System.out.println("Exiting program...");
+						break;
 					}
-
-				} while (!menuChoice.equals("1")|| menuChoice.equals("2"));
+				
+				} while (menuChoice.equals("1") || menuChoice.equals("2") || menuChoice.equals("3") || menuChoice.equals("q") );
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,11 +197,11 @@ public class ProgressTrackerDriver {
 		}
 	}
 
-	public static void promptUserActions() {
+	public static void promptUserActions(User user) {
 		
 		String option1 = "1-Add Shows", option2 = "2-Update Progress";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%10s %20s\n",option1, option2);
+		System.out.printf("%-20s %-20s\n", option1, option2);
 		UserDao userDao = new UserDaoSql();
 		
 		try(Scanner scan = new Scanner(System.in)) {
@@ -174,7 +211,15 @@ public class ProgressTrackerDriver {
 			if(input == 1) {
 				userDao.getAllShows();
 				System.out.print("\nAdd show by ID: ");
-				int id = scan.nextInt();
+				int showId = scan.nextInt();
+				int userId = user.getUserId();
+				
+				String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
+				System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
+				int choice = scan.nextInt();
+				
+				
+				
 			}
 			
 		} catch (InputMismatchException e) {
@@ -182,6 +227,30 @@ public class ProgressTrackerDriver {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	public static String promptAdminActions(Scanner scan) {
+		
+		String option1 = "1-Create Show", option2 = "2-Update Show", option3 = "3-Delete Show", option4 = "q-Quit";
+		System.out.println("\nWhat would you like to do?");
+		System.out.printf("%-20s %-20s %-20s %-20s\n",option1, option2, option3, option4);
+		String menuChoice = null;
+		
+		try {
+			
+			menuChoice = scan.next();
+			scan.nextLine();
+			
+			return menuChoice;
+			
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid choice entered");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 		
 	}
 	
