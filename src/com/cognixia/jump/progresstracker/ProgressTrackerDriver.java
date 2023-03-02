@@ -31,12 +31,15 @@ public class ProgressTrackerDriver {
 
 		// Use try-with-resources to automatically close scanner
 		try (Scanner scan = new Scanner(System.in)) {
-
+			User u1;
+			do {
 			System.out.print("Username: ");
 			username = scan.next();
 			System.out.print("Password: ");
 			password = scan.next();
-			User u1 = checkUser(username, password);
+			u1 = checkUser(username, password);
+			} while (u1.getUsername() == null);
+			System.out.println("Welcome "+ u1.getUsername() +"!" +"\n\n");
 			
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
@@ -159,7 +162,7 @@ public class ProgressTrackerDriver {
 			Optional<User> currUser = userDao.authenticateUser(username, password);
 
 			// We can create a custom exception if the user is not found
-			if (currUser.isEmpty()) {
+			if (currUser.get().getUsername() == null) {
 				throw new UserNotFoundException();
 			}
 

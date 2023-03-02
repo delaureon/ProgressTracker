@@ -3,6 +3,6 @@ package com.cognixia.jump.progresstracker.dao;
 public class CurrentEpOverTotalException extends Exception {
 
 		public CurrentEpOverTotalException(int current, int total) {
-			// super when current no. of episodes is over the total
+			super("Invalid number of current episodes: " + current + ". Out of scope of total number: " + total);
 		}
 }
