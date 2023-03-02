@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.invoke.WrongMethodTypeException;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -24,28 +25,38 @@ public class ProgressTrackerDriver {
 		String password = null;
 		String menuChoice ;
 		System.out.println("Welcome to the TV Show Tracker!");
+		
+		
 
 		// Use try-with-resources to automatically close scanner
 		try (Scanner scan = new Scanner(System.in)) {
 
-			System.out.print("Username:");
+			System.out.print("Username: ");
 			username = scan.next();
-			System.out.print("Password:");
+			System.out.print("Password: ");
 			password = scan.next();
 			User u1 = checkUser(username, password);
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
+				promptUserActions();
+				
 			} else {
 				do {
+					AdminDaoSql a1=new AdminDaoSql();
+					a1.setConnection();
+					a1.getAllShows();
 					System.out.println("Press 1 to add a new show to your list or 2 to update a status");
 					menuChoice = scan.next();
 					if (menuChoice.equals("1")) {
-					 AdminDaoSql a1=new AdminDaoSql();
-					 a1.setConnection();
 					 System.out.print("Show Name: ");
-					 String sName=scan.next();
+					 String sName=scan.nextLine();
+					 scan.nextLine();
 					 System.out.print("Description: ");
+
 					 String desc=scan.next();
+
+					 String desc=scan.nextLine();
+
 					 System.out.println("Number of Episodes:");
 					 int numEps=scan.nextInt();
 					 Show s1=new Show(sName,desc,numEps);
@@ -61,6 +72,7 @@ public class ProgressTrackerDriver {
 			e.printStackTrace();
 		}
 	}
+
 
 	public static User checkUser(String username, String password) {
 		// check user data with database
@@ -111,4 +123,29 @@ public class ProgressTrackerDriver {
 		}
 	}
 
+	public static void promptUserActions() {
+		
+		String option1 = "1-Add Shows", option2 = "2-Update Progress";
+		System.out.println("\nWhat would you like to do?");
+		System.out.printf("%10s %20s\n",option1, option2);
+		UserDao userDao = new UserDaoSql();
+		
+		try(Scanner scan = new Scanner(System.in)) {
+			userDao.setConnection();
+			int input = scan.nextInt();
+			
+			if(input == 1) {
+				userDao.getAllShows();
+				System.out.print("\nAdd show by ID: ");
+				int id = scan.nextInt();
+			}
+			
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid choice entered");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 }
