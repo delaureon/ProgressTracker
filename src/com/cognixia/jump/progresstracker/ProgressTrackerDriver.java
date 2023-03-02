@@ -46,13 +46,13 @@ public class ProgressTrackerDriver {
 					 String sName=scan.next();
 					 System.out.print("Description: ");
 					 String desc=scan.next();
-					 System.out.print("Number of Episodes:");
+					 System.out.println("Number of Episodes:");
 					 int numEps=scan.nextInt();
 					 Show s1=new Show(sName,desc,numEps);
 					 a1.createShow(s1);
 					 a1.getAllShows();
 					} else if (menuChoice.equals("2")) {
-
+                      
 					}
 
 				} while (!menuChoice.equals("1")|| menuChoice.equals("2"));
