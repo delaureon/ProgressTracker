@@ -13,6 +13,7 @@ import com.cognixia.jump.progresstracker.dao.Show;
 import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
 import com.cognixia.jump.progresstracker.dao.UserDaoSql;
+import com.cognixia.jump.progresstracker.dao.UserNotFoundException;
 import com.cognixia.jump.progresstracker.dao.UserShowDaoSql;
 
 //import com.cognixia.jump.progresstracker.dao.*;
@@ -53,14 +54,13 @@ public class ProgressTrackerDriver {
 					 scan.nextLine();
 					 System.out.print("Description: ");
 					 String desc=scan.nextLine();
-
 					 System.out.println("Number of Episodes:");
 					 int numEps=scan.nextInt();
 					 Show s1=new Show(sName,desc,numEps);
 					 a1.createShow(s1);
 					 a1.getAllShows();
 					} else if (menuChoice.equals("2")) {
-                      
+
 					}
 
 				} while (!menuChoice.equals("1")|| menuChoice.equals("2"));
@@ -85,12 +85,14 @@ public class ProgressTrackerDriver {
 
 			// We can create a custom exception if the user is not found
 			if (currUser.isEmpty()) {
-//				throw UserNotFoundException();
+				throw new UserNotFoundException();
 			}
 
 			validUser = currUser.get();
 			return validUser;
 
+		} catch (UserNotFoundException e){
+			System.out.println(e.getMessage());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
