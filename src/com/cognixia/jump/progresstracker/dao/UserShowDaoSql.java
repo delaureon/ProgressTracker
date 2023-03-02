@@ -31,14 +31,9 @@ public class UserShowDaoSql implements UserShowDao {
 				+ "from users join Users_Shows on users.UserID=Users_Shows.UserID "
 				+ "join Shows on Users_Shows.ShowID=Shows.ShowID "
 				+ "where users.UserID = ?")){
-			
-			
+				
 				pstmt.setInt(1, id);
 				ResultSet rs = pstmt.executeQuery();
-				
-				
-				
-			
 
 			while (rs.next()) {
 
@@ -48,7 +43,7 @@ public class UserShowDaoSql implements UserShowDao {
 				int rating = rs.getInt("Rating");
 				int totalEp = rs.getInt("totalEps");
 
-				System.out.println(showId + " " + name + " " + currEp + " " + rating + " " + totalEp);
+				System.out.printf("%10s %20s %20s %20s %-10s%n",showId, name,currEp, rating, totalEp);
 			}
 			
 			return true;

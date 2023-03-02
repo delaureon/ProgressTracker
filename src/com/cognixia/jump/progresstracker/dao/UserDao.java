@@ -15,6 +15,8 @@ public interface UserDao {
 	// Obtains the list of user shows
 	public boolean getShows(int id);
 	
+	public boolean getAllShows();
+	
 	public Optional<Show> getShowById(int id);
 	
 	public Optional<User> authenticateUser(String username, String password);
