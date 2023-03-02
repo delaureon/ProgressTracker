@@ -21,9 +21,9 @@ public interface UserDao {
 	
 	public Optional<User> authenticateUser(String username, String password);
 	
-	public boolean updateShows(int id);
-	
-	public boolean addShows(int id);
+	public boolean addShows(UserShow show);
+
+	public boolean updateShows(UserShow show);
 	
 	// Admin class that implements this interface will have create, update, and delete functions within its own class
 	

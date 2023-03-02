@@ -5,13 +5,15 @@ public class UserShow {
 	private int showID;
 	private int rating;
 	private int currEp;
+	private int progressID;
 
-	public UserShow(int userID, int showID, int rating, int currEp) {
+	public UserShow(int userID, int showID, int progressID,int rating, int currEp) {
 		super();
 		this.userID = userID;
 		this.showID = showID;
 		this.rating = rating;
 		this.currEp = currEp;
+		this.progressID=progressID;
 	}
 
 	public int getUserID() {
@@ -32,6 +34,15 @@ public class UserShow {
 
 	public int getRating() {
 		return rating;
+	}
+	
+
+	public int getProgressID() {
+		return progressID;
+	}
+
+	public void setProgressID(int progressID) {
+		this.progressID = progressID;
 	}
 
 	public void setRating(int rating) {
