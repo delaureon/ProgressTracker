@@ -47,10 +47,10 @@ public class ProgressTrackerDriver {
 					a1.getAllShows();
 					System.out.println("Press 1 to add a new show to your list or 2 to update a status");
 					menuChoice = scan.next();
+					scan.nextLine();
 					if (menuChoice.equals("1")) {
 					 System.out.print("Show Name: ");
 					 String sName=scan.nextLine();
-					 scan.nextLine();
 					 System.out.print("Description: ");
 					 String desc=scan.nextLine();
 
@@ -60,7 +60,44 @@ public class ProgressTrackerDriver {
 					 a1.createShow(s1);
 					 a1.getAllShows();
 					} else if (menuChoice.equals("2")) {
-                      
+						
+						System.out.print("Enter Show ID for update: ");
+						int id = scan.nextInt();
+						Optional<Show> show = a1.getShowById(id);
+						if(show.isPresent()) {
+							
+							Show validShow = show.get();
+							
+							String option1 = "1-Name", option2 = "2-Description", option3 = "3-Total number of episodes";
+							System.out.println("What would you like to update");
+							System.out.printf("%10s %20s %20s\n",option1, option2, option3);
+							String option = scan.next();
+							
+							if(option.equals("1")) {
+								System.out.print("Enter new name: ");
+								scan.nextLine();
+								String name = scan.nextLine();
+								validShow.setShowName(name);
+							} else if(option.equals("2")) {
+								System.out.print("Enter new description: ");
+								scan.nextLine();
+								String descript = scan.nextLine();
+								validShow.setDesc(descript);
+							} else if(option.equals("3")) {
+								System.out.print("Enter new number of total episodes: ");
+								int totalNum = scan.nextInt();
+								validShow.setNumEp(totalNum);
+							}
+							
+							
+							
+							a1.updateShow(validShow);
+						} else {
+							System.out.println("Invalid show entered");
+						}
+						
+						
+						
 					}
 
 				} while (!menuChoice.equals("1")|| menuChoice.equals("2"));

@@ -82,11 +82,11 @@ public class AdminDaoSql  implements AdminDao {
 
 	@Override
 	public boolean updateShow(Show show) {
-		try (PreparedStatement pstmt=conn.prepareStatement("Update Shows where ShowID=? set ShowName=? set Desc=? set NumEp=?")){
-			pstmt.setInt(1, show.getId());
-			pstmt.setString(2, show.getShowName());
-			pstmt.setString(3,show.getDesc());
-			pstmt.setInt(4, show.getNumEp());
+		try (PreparedStatement pstmt=conn.prepareStatement("Update Shows set Name=?, Descript=?, TotalEps=? where ShowID=?")){
+			pstmt.setString(1, show.getShowName());
+			pstmt.setString(2,show.getDesc());
+			pstmt.setInt(3, show.getNumEp());
+			pstmt.setInt(4, show.getId());
 			int count=pstmt.executeUpdate();
 			if(count>0) {
 				return true;
@@ -105,7 +105,7 @@ public class AdminDaoSql  implements AdminDao {
 			ResultSet rs=pstmt.executeQuery();
 			if(rs.next()) {
 				int showID=rs.getInt("ShowId");
-				String name=rs.getString("ShowName");
+				String name=rs.getString("Name");
 				String desc=rs.getString("Descript");
 				int numEps=rs.getInt("TotalEps");
 				rs.close();
