@@ -71,7 +71,7 @@ public class ProgressTrackerDriver {
 							
 							String option1 = "1-Name", option2 = "2-Description", option3 = "3-Total number of episodes";
 							System.out.println("What would you like to update");
-							System.out.printf("%10s %20s %20s\n",option1, option2, option3);
+							System.out.printf("%-20s %-20s %-20s\n",option1, option2, option3);
 							String option = scan.next();
 							
 							if(option.equals("1")) {
