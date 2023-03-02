@@ -51,7 +51,7 @@ public class ProgressTrackerDriver {
 					 System.out.print("Show Name: ");
 					 String sName=scan.nextLine();
 					 scan.nextLine();
-					 System.out.print("Description: ");
+					 System.out.println("Description: ");
 
 					 String desc=scan.next();
 
