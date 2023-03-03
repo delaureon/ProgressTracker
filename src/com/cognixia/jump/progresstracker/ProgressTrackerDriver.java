@@ -230,6 +230,9 @@ public class ProgressTrackerDriver {
 				
 				
 				
+			//-----------------
+			// UPDATE PROGRESS
+			//-----------------
 			} else if(input.equals("2")) {
 				// Gets all the user shows so user knows which one to update
 				userDao.getShows(user.getUserId());
@@ -254,13 +257,10 @@ public class ProgressTrackerDriver {
 						System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
 						int progressId = scan.nextInt();
 
-					
-						Optional<UserShow> showToUpdate = userDao.getUserShow(user.getUserId(),showId);
+						Optional<UserShow> showToUpdate = userDao.getUserShow(user.getUserId(),validShow.getId());
 						UserShow s2U=showToUpdate.get();
 						s2U.setProgressID(progressId);
 						userDao.updateShows(s2U);
-						System.out.println(s2U);
-						userDao.getShows(user.getUserId());
 						
 						
 					} else if (choice == 2) {
@@ -275,7 +275,7 @@ public class ProgressTrackerDriver {
 					
 					
 					
-					
+					userDao.getShows(user.getUserId());
 
 					
 //					userDao.updateShows(userShow);

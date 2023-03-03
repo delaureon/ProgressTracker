@@ -149,7 +149,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 	
 	@Override
 	public boolean updateShows(UserShow show) {
-		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=? and ShowID = ?")){
+		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=? and ShowID=?")){
 		pstmt.setInt(1, show.getProgressID());
 		pstmt.setInt(2,show.getRating());
 		pstmt.setInt(3, show.getCurrEp());
@@ -157,7 +157,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		pstmt.setInt(5, show.getShowID());
 		int count=pstmt.executeUpdate();
 		if( count>0) return true;
-		
+			System.out.println(count + " show(s) updated");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -220,8 +220,8 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 
 try(PreparedStatement pstmt = conn.prepareStatement("select * from users_shows where ShowID = ? and UserID=?")) {
 			
-			pstmt.setInt(1, userID);
-			pstmt.setInt(2, showID);
+			pstmt.setInt(1, showID);
+			pstmt.setInt(2, userID);
 			ResultSet rs = pstmt.executeQuery();
 			
 			
