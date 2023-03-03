@@ -44,8 +44,10 @@ public class ProgressTrackerDriver {
 			
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
-				promptUserActions(u1);
-	
+				String input;
+				do {
+				 input=promptUserActions(u1,scan);
+				}while(!input.equals("q"));
 				
 			} else {
 				do {
@@ -197,14 +199,14 @@ public class ProgressTrackerDriver {
 		}
 	}
 
-	public static void promptUserActions(User user) {
+	public static String promptUserActions(User user,Scanner scan) {
 		
 		String option1 = "1-Add Show", option2 = "2-Update Progress", option3 = "q-Quit";
 		System.out.println("\nWhat would you like to do?");
 		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
 		UserDao userDao = new UserDaoSql();
 		
-		try(Scanner scan = new Scanner(System.in)) {
+		try {
 			userDao.setConnection();
 			String input = scan.next();
 			
@@ -288,13 +290,13 @@ public class ProgressTrackerDriver {
 				System.out.println("Exiting program...");
 			}
 			
-			
+			return input;
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		return null;
 	}
 	
 	public static String promptAdminActions(Scanner scan) {
