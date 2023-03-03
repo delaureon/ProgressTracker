@@ -45,13 +45,7 @@ public class ProgressTrackerDriver {
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
 				promptUserActions(u1);
-				
-				
-				
-				
-				
-				
-				
+	
 				
 			} else {
 				do {
@@ -242,7 +236,7 @@ public class ProgressTrackerDriver {
 				System.out.println("\nUpdate progress by Show ID: ");
 				int showId = scan.nextInt();
 				Optional<Show> currShow = userDao.getShowById(showId);
-				System.out.println(currShow.get());
+				
 				
 				if(currShow.isPresent()) {
 					Show validShow = currShow.get();
@@ -255,13 +249,18 @@ public class ProgressTrackerDriver {
 					
 					if(choice == 1) {
 						
-						System.out.println("What is you current progress?");
+						System.out.println("What is your current progress?");
 						String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
 						System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
 						int progressId = scan.nextInt();
-						
-//						UserShow userShow = new UserShow(user.getUserId(), validShow.getId(), progressId ,  );
-						
+
+					
+						Optional<UserShow> showToUpdate = userDao.getUserShow(user.getUserId(),showId);
+						UserShow s2U=showToUpdate.get();
+						s2U.setProgressID(progressId);
+						userDao.updateShows(s2U);
+						System.out.println(s2U);
+						userDao.getShows(user.getUserId());
 						
 						
 					} else if (choice == 2) {

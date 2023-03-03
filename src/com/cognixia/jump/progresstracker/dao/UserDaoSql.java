@@ -27,17 +27,19 @@ public class UserDaoSql implements UserDao {
 	@Override
 	public boolean getShows(int id) {
 		
-		try (PreparedStatement pstmt = conn.prepareStatement("select Users_Shows.ShowID, progress.progress,Users.Userid,Name, CurrentEp,Rating , totalEps, ((CurrentEp /totalEps)*100) as percentcomplete from users join Users_Shows on users.UserID=Users_Shows.UserID"
-				+ " join progress on Users_Shows.ProgressID=progress.ProgressID"
-				+ " join Shows on Users_Shows.ShowID=Shows.ShowID"
-				+ " where USers.userid=?;")){
+		try (PreparedStatement pstmt = conn.prepareStatement("select Users_Shows.ShowID, progress.progress,Users.Userid,Name, CurrentEp,Rating , totalEps, ((CurrentEp /totalEps)*100) as percentcomplete "
+				+ "from users "
+				+ "join Users_Shows on users.UserID=Users_Shows.UserID "
+				+ "join progress on Users_Shows.ProgressID=progress.ProgressID "
+				+ "join Shows on Users_Shows.ShowID=Shows.ShowID "
+				+ "where Users.userid=?;")){
 				
 				// Obtain the shows for the currently logged on user
 				pstmt.setInt(1, id);
 				ResultSet rs = pstmt.executeQuery();
 //	
 				System.out.printf("%10s %20s %20s %20s %15s %15s %20s", "Show ID","Name", "Current Episode","Progress", "Rating","Total Episodes", "Percent Complete");
-				System.out.println("\n----------------------------------------------------------------------------------------------------------------");
+				System.out.println("\n--------------------------------------------------------------------------------------------------------------------------------");
 			while (rs.next()) {
 
 				int showId = rs.getInt("showid");
@@ -48,13 +50,7 @@ public class UserDaoSql implements UserDao {
 				int totalEp = rs.getInt("totalEps");
 				int percComp=rs.getInt("percentcomplete");
 				
-				System.out.printf("%10s %20s %20s %20s %15s %15d %20d%n", showId, name, currEp,progress, rating,totalEp,percComp);
-//				System.out.println("Show ID: " + showId + " " 
-//									+ "Title: " + name + " " 
-//									+ "Episode: "+ currEp + "/" + totalEp + " "
-//									+ "Rating: " + rating
-//								  );
-//				
+				System.out.printf("%10s %20s %20s %20s %15s %15d %20s%n", showId, name, currEp,progress, rating,totalEp,(percComp+ "%"));			
 				
 			}
 			
@@ -78,7 +74,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			
 			// rs.next() will return false if nothing found
 			// if you enter the if block, that show with that id was found
-			if(rs.next()) {
+			while(rs.next()) {
 				
 				int showId = rs.getInt("ShowID");
 				String name = rs.getString("Name");
@@ -96,11 +92,11 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 				// return the optional
 				return showFound;
 			}
-			else {
+			
 				// if you did not find the department with that id, return an empty optional
 				rs.close();
 				return Optional.empty();
-			}
+			
 			
 			
 		} catch (SQLException e) {
@@ -141,8 +137,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 			Optional<User> userFound = Optional.of(user);
 //			System.out.println("Welcome "+ uName +"!" +"\n\n");
 			return userFound;
-			
-			
+					
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -223,7 +218,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 	public Optional<UserShow> getUserShow(int userID, int showID) {
 		
 
-try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where ShowID = ? and UserID=?")) {
+try(PreparedStatement pstmt = conn.prepareStatement("select * from users_shows where ShowID = ? and UserID=?")) {
 			
 			pstmt.setInt(1, userID);
 			pstmt.setInt(2, showID);
