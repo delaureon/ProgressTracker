@@ -57,4 +57,12 @@ public class UserShow {
 		this.currEp = currEp;
 	}
 
+	@Override
+	public String toString() {
+		return "UserShow [userID=" + userID + ", showID=" + showID + ", rating=" + rating + ", currEp=" + currEp
+				+ ", progressID=" + progressID + "]";
+	}
+	
+	
+
 }

@@ -9,12 +9,14 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.cognixia.jump.progresstracker.dao.AdminDaoSql;
+import com.cognixia.jump.progresstracker.dao.CurrentEpOverTotalException;
 import com.cognixia.jump.progresstracker.dao.Show;
 import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
 import com.cognixia.jump.progresstracker.dao.UserDaoSql;
 import com.cognixia.jump.progresstracker.dao.UserNotFoundException;
-import com.cognixia.jump.progresstracker.dao.UserShowDaoSql;
+import com.cognixia.jump.progresstracker.dao.UserShow;
+
 
 //import com.cognixia.jump.progresstracker.dao.*;
 
@@ -43,14 +45,10 @@ public class ProgressTrackerDriver {
 			
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
-				promptUserActions(u1);
-				
-				
-				
-				
-				
-				
-				
+				String input;
+				do {
+				 input=promptUserActions(u1,scan);
+				}while(!input.equals("q"));
 				
 			} else {
 				do {
@@ -114,6 +112,7 @@ public class ProgressTrackerDriver {
 							
 
 							a1.updateShow(validShow);
+							a1.getAllShows();
 						} else {
 							System.out.println("Invalid show entered");
 						}
@@ -132,6 +131,7 @@ public class ProgressTrackerDriver {
 						
 						if(deleted) {
 							System.out.println("Deleted successfully");
+							a1.getAllShows();
 						}else {
 							System.out.println("Could not delete");
 						}
@@ -200,14 +200,14 @@ public class ProgressTrackerDriver {
 		}
 	}
 
-	public static void promptUserActions(User user) {
+	public static String promptUserActions(User user,Scanner scan) {
 		
 		String option1 = "1-Add Show", option2 = "2-Update Progress", option3 = "q-Quit";
 		System.out.println("\nWhat would you like to do?");
 		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
 		UserDao userDao = new UserDaoSql();
 		
-		try(Scanner scan = new Scanner(System.in)) {
+		try {
 			userDao.setConnection();
 			String input = scan.next();
 			
@@ -217,10 +217,29 @@ public class ProgressTrackerDriver {
 				int showId = scan.nextInt();
 				int userId = user.getUserId();
 				
-				System.out.println("Where would you like to add it?");
+				System.out.println("What's your progress on the show?");
 				String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
 				System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
-				int choice = scan.nextInt();
+				int progressId = scan.nextInt();
+				
+				System.out.println("What would you rate the show (1-5)? ");
+				int rating = scan.nextInt();
+				
+				System.out.println("What episode are you on?");
+				int currEp = scan.nextInt();
+				Optional<Show> currShow = userDao.getShowById(showId);
+				if(currShow.isPresent()) {
+					Show validShow = currShow.get();
+
+					if(currEp > validShow.getNumEp()) {
+						throw new CurrentEpOverTotalException(currEp, validShow.getNumEp());
+					}
+
+				}
+				UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
+				userDao.addShows(userShow);
+				
+				userDao.getShows(user.getUserId());
 				
 				
 				
@@ -231,9 +250,55 @@ public class ProgressTrackerDriver {
 				int showId = scan.nextInt();
 				Optional<Show> currShow = userDao.getShowById(showId);
 				
+				
 				if(currShow.isPresent()) {
 					Show validShow = currShow.get();
-					userDao.updateShows(showId);
+					Optional<UserShow> showToUpdate = userDao.getUserShow(user.getUserId(),showId);
+					UserShow s2U=showToUpdate.get();
+					System.out.println("\nWhat would you like to update?");
+					String option4 = "1-Progress", option5 = "2-Rating", option6 = "3-Current Episode";
+					System.out.printf("%-20s %-20s %-20s\n", option4, option5, option6);
+					int choice = scan.nextInt();
+					
+					
+					if(choice == 1) {
+						
+						System.out.println("What is your current progress?");
+						String progress1 = "1-Not Started", progress2 = "2-In Progress", progress3 = "3-Completed";
+						System.out.printf("%-20s %-20s %-20s\n", progress1, progress2, progress3);
+						int progressId = scan.nextInt();
+
+					
+						
+						
+						s2U.setProgressID(progressId);
+						userDao.updateShows(s2U);
+						userDao.getShows(user.getUserId());
+						
+						
+					} else if (choice == 2) {
+						System.out.println("How would you rate the show (1-5)?");
+						int rating = scan.nextInt();
+						s2U.setRating(rating);
+						userDao.updateShows(s2U);
+						userDao.getShows(user.getUserId());
+					} else if (choice == 3) {
+						System.out.println("What episode are you currently on?");
+						int currEp = scan.nextInt();
+						Optional<Show> currShow1 = userDao.getShowById(showId);
+						if(currShow1.isPresent()) {
+							Show validShow1 = currShow1.get();
+
+							if(currEp > validShow1.getNumEp()) {
+								throw new CurrentEpOverTotalException(currEp, validShow1.getNumEp());
+							}
+
+						}
+						s2U.setCurrEp(currEp);
+						userDao.updateShows(s2U);
+						userDao.getShows(user.getUserId());
+					}
+					
 					
 				} else {
 					// Exception here?
@@ -243,13 +308,15 @@ public class ProgressTrackerDriver {
 				System.out.println("Exiting program...");
 			}
 			
-			
+			return input;
+		}catch(CurrentEpOverTotalException e) {
+			System.out.println(e.getMessage());
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		return null;
 	}
 	
 	public static String promptAdminActions(Scanner scan) {
