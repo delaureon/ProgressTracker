@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.cognixia.jump.progresstracker.dao.AdminDaoSql;
+import com.cognixia.jump.progresstracker.dao.CurrentEpOverTotalException;
 import com.cognixia.jump.progresstracker.dao.Show;
 import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
@@ -226,7 +227,15 @@ public class ProgressTrackerDriver {
 				
 				System.out.println("What episode are you on?");
 				int currEp = scan.nextInt();
-				
+				Optional<Show> currShow = userDao.getShowById(showId);
+				if(currShow.isPresent()) {
+					Show validShow = currShow.get();
+
+					if(currEp > validShow.getNumEp()) {
+						throw new CurrentEpOverTotalException(currEp, validShow.getNumEp());
+					}
+
+				}
 				UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
 				userDao.addShows(userShow);
 				
@@ -276,6 +285,15 @@ public class ProgressTrackerDriver {
 					} else if (choice == 3) {
 						System.out.println("What episode are you currently on?");
 						int currEp = scan.nextInt();
+						Optional<Show> currShow1 = userDao.getShowById(showId);
+						if(currShow1.isPresent()) {
+							Show validShow1 = currShow1.get();
+
+							if(currEp > validShow1.getNumEp()) {
+								throw new CurrentEpOverTotalException(currEp, validShow1.getNumEp());
+							}
+
+						}
 						s2U.setCurrEp(currEp);
 						userDao.updateShows(s2U);
 						userDao.getShows(user.getUserId());
@@ -291,6 +309,8 @@ public class ProgressTrackerDriver {
 			}
 			
 			return input;
+		}catch(CurrentEpOverTotalException e) {
+			System.out.println(e.getMessage());
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
 		} catch (Exception e) {
