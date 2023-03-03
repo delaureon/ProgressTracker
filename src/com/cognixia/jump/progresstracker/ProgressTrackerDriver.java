@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.cognixia.jump.progresstracker.dao.AdminDaoSql;
+import com.cognixia.jump.progresstracker.dao.CurrentEpOverTotalException;
 import com.cognixia.jump.progresstracker.dao.Show;
 import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
@@ -223,6 +224,16 @@ public class ProgressTrackerDriver {
 				System.out.println("What episode are you on?");
 				int currEp = scan.nextInt();
 				
+				// Check if episode inputed is over total episodes 
+				Optional<Show> currShow = userDao.getShowById(showId);
+				Show validShow = currShow.get();
+				
+				// Throw custom exception if curr episode is larger than total episode
+				if(currEp > validShow.getNumEp()) {
+					throw new CurrentEpOverTotalException(currEp, validShow.getNumEp());
+				}
+				
+				
 				UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
 				userDao.addShows(userShow);
 				
@@ -289,6 +300,8 @@ public class ProgressTrackerDriver {
 			}
 			
 			
+		} catch (CurrentEpOverTotalException e) { 
+			System.out.println(e.getMessage());
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
 		} catch (Exception e) {
