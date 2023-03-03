@@ -246,7 +246,7 @@ public class ProgressTrackerDriver {
 				
 				if(currShow.isPresent()) {
 					Show validShow = currShow.get();
-			
+					
 					System.out.println("\nWhat would you like to update?");
 					String option4 = "1-Progress", option5 = "2-Rating", option6 = "3-Current Episode";
 					System.out.printf("%-20s %-20s %-20s\n", option4, option5, option6);
@@ -274,7 +274,12 @@ public class ProgressTrackerDriver {
 						
 					}
 					
-				
+					
+					
+					
+
+					
+//					userDao.updateShows(userShow);
 					
 				} else {
 					// Exception here?
