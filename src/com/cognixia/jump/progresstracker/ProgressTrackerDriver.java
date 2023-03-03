@@ -2,13 +2,13 @@ package com.cognixia.jump.progresstracker;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.invoke.WrongMethodTypeException;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.Scanner;
 
 import com.cognixia.jump.progresstracker.dao.AdminDaoSql;
-import com.cognixia.jump.progresstracker.dao.CurrentEpOverTotalException;
 import com.cognixia.jump.progresstracker.dao.Show;
 import com.cognixia.jump.progresstracker.dao.User;
 import com.cognixia.jump.progresstracker.dao.UserDao;
@@ -44,8 +44,10 @@ public class ProgressTrackerDriver {
 			
 			if (u1.getRoleType() == 0) {
 				printUserShows(u1.getUserId());
-				promptUserActions(u1);
-	
+				String input;
+				do {
+				 input=promptUserActions(u1,scan);
+				}while(!input.equals("q"));
 				
 			} else {
 				do {
@@ -109,6 +111,7 @@ public class ProgressTrackerDriver {
 							
 
 							a1.updateShow(validShow);
+							a1.getAllShows();
 						} else {
 							System.out.println("Invalid show entered");
 						}
@@ -127,6 +130,7 @@ public class ProgressTrackerDriver {
 						
 						if(deleted) {
 							System.out.println("Deleted successfully");
+							a1.getAllShows();
 						}else {
 							System.out.println("Could not delete");
 						}
@@ -195,21 +199,17 @@ public class ProgressTrackerDriver {
 		}
 	}
 
-	public static void promptUserActions(User user) {
+	public static String promptUserActions(User user,Scanner scan) {
 		
 		String option1 = "1-Add Show", option2 = "2-Update Progress", option3 = "q-Quit";
 		System.out.println("\nWhat would you like to do?");
 		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
 		UserDao userDao = new UserDaoSql();
 		
-		try(Scanner scan = new Scanner(System.in)) {
+		try {
 			userDao.setConnection();
 			String input = scan.next();
 			
-			
-			//---------------
-			// ADD SHOW
-			//---------------
 			if(input.equals("1")) {
 				userDao.getAllShows();
 				System.out.print("\nAdd show by ID: ");
@@ -227,27 +227,13 @@ public class ProgressTrackerDriver {
 				System.out.println("What episode are you on?");
 				int currEp = scan.nextInt();
 				
-				Optional<Show> currShow = userDao.getShowById(showId);
-				if(currShow.isPresent()) {
-					Show validShow = currShow.get();
-					
-					if(currEp > validShow.getNumEp()) {
-						throw new CurrentEpOverTotalException(currEp, validShow.getNumEp());
-					}
-					
-				}
-				
-				
-				
 				UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
 				userDao.addShows(userShow);
 				
 				userDao.getShows(user.getUserId());
 				
 				
-			//-----------------
-			// UPDATE PROGRESS
-			//-----------------
+				
 			} else if(input.equals("2")) {
 				// Gets all the user shows so user knows which one to update
 				userDao.getShows(user.getUserId());
@@ -290,26 +276,12 @@ public class ProgressTrackerDriver {
 					} else if (choice == 3) {
 						System.out.println("What episode are you currently on?");
 						int currEp = scan.nextInt();
-						
-						Optional<Show> currShow1 = userDao.getShowById(showId);
-						if(currShow1.isPresent()) {
-							Show validShow1 = currShow1.get();
-							
-							if(currEp > validShow1.getNumEp()) {
-								throw new CurrentEpOverTotalException(currEp, validShow1.getNumEp());
-							}
-							
-						}
-						
 						s2U.setCurrEp(currEp);
-						
-						
-						
 						userDao.updateShows(s2U);
 						userDao.getShows(user.getUserId());
-						
-						
 					}
+					
+					
 				} else {
 					// Exception here?
 				}
@@ -318,15 +290,13 @@ public class ProgressTrackerDriver {
 				System.out.println("Exiting program...");
 			}
 			
-			
-		} catch(CurrentEpOverTotalException e) { 
-			System.out.println(e.getMessage());
+			return input;
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		return null;
 	}
 	
 	public static String promptAdminActions(Scanner scan) {
