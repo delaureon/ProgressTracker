@@ -208,15 +208,11 @@ public class ProgressTrackerDriver {
 
 	public static String promptUserActions(User user,Scanner scan) {
 		
-<<<<<<< HEAD
-		String option1 = "1-Add Show", option2 = "2-Update Progress",option3="3-View Favorites", option0 = "q-Log out";
+
+		String option1 = "1-Add Show", option2 = "2-Update Progress",option3="3-View Favorites", option9= "4-Delete Show", option0 = "q-Log out";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s %-20s %-20s\n", option1, option2, option3,option0);
-=======
-		String option1 = "1-Add Show", option2 = "2-Update Progress", option10 = "3-Delete Show", option3 = "q-Quit";
-		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option10, option3);
->>>>>>> Elijah
+		System.out.printf("%-20s %-20s %-20s %-20s\n", option1, option2, option3,option9, option0);
+
 		UserDao userDao = new UserDaoSql();
 		
 		try {
@@ -316,7 +312,7 @@ public class ProgressTrackerDriver {
 					// Exception here?
 				}
 				
-<<<<<<< HEAD
+
 			} else if(input.equals("3")) {
 				int menuChoice;
 				do {
@@ -340,18 +336,14 @@ public class ProgressTrackerDriver {
 						userDao.removeFavorite(user.getUserId(),showID);
 					}
 				} while (menuChoice != 0);
-			}
-			else if(input.equals("q")) {
-				System.out.println("Signing out...");
-=======
 			}else if(input.equals("3")) {
 				System.out.println("Which Show Would you like to delete?");
 				int showId = scan.nextInt();
 				userDao.deleteUserShowById(showId);
-				
-			}else if(input.equals("q")) {
-				System.out.println("Exiting program...");
->>>>>>> Elijah
+			}
+			else if(input.equals("q")) {
+				System.out.println("Signing out...");
+			
 			}
 			
 			return input;
