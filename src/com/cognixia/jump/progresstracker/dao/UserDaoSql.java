@@ -145,8 +145,21 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		return Optional.empty();
 	}
 
+	@Override
+	public boolean addUser(User user){
+		int count = 0;
+		try (PreparedStatement pstmt = conn.prepareStatement("insert into Users values(null,?,?,0)")) {
+			pstmt.setString(1, user.getUsername());
+			pstmt.setString(2, user.getPassword());
+			count = pstmt.executeUpdate();
 
-	
+		} catch (SQLException e) {
+			System.out.println("Username has already been taken");
+		}
+		return count > 0;
+	}
+
+
 	@Override
 	public boolean updateShows(UserShow show) {
 		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=? and ShowID=?")){
@@ -181,8 +194,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 				return true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Could not add show");
 		}
 		return false;
 	}
