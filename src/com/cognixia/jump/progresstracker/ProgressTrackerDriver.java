@@ -28,127 +28,133 @@ public class ProgressTrackerDriver {
 		String password = null;
 		String menuChoice ;
 		System.out.println("Welcome to the TV Show Tracker!");
-		
-		
 
 		// Use try-with-resources to automatically close scanner
 		try (Scanner scan = new Scanner(System.in)) {
 			User u1;
+			int choice;
 			do {
-			System.out.print("Username: ");
-			username = scan.next();
-			System.out.print("Password: ");
-			password = scan.next();
-			u1 = checkUser(username, password);
-			} while (u1.getUsername() == null);
-			System.out.println("Welcome "+ u1.getUsername() +"!" +"\n\n");
-			
-			if (u1.getRoleType() == 0) {
-				printUserShows(u1.getUserId());
-				String input;
-				do {
-				 input=promptUserActions(u1,scan);
-				}while(!input.equals("q"));
-				
-			} else {
-				do {
-					AdminDaoSql a1=new AdminDaoSql();
-					a1.setConnection();
-					menuChoice = promptAdminActions(scan);
-					
-					
-					//------------------
-					// CREATE NEW SHOW
-					//------------------
-					if (menuChoice.equals("1")) {
-						
-					 System.out.print("Show Name: ");
-					 String sName=scan.nextLine();
-					 
-					 System.out.print("Description: ");
-					 String desc=scan.nextLine();
-
-					 System.out.println("Number of Episodes:");
-					 int numEps=scan.nextInt();
-					 
-					 Show s1=new Show(sName,desc,numEps);
-					 a1.createShow(s1);
-					 a1.getAllShows();
-					 
-					 
-					//------------------
-					// UPDATE SHOW
-					//------------------
-					} else if (menuChoice.equals("2")) {
-						
-						a1.getAllShows();
-						System.out.print("Enter Show ID for update: ");
-						int id = scan.nextInt();
-						Optional<Show> show = a1.getShowById(id);
-						if(show.isPresent()) {
-							
-							Show validShow = show.get();
-							
-							String option1 = "1-Name", option2 = "2-Description", option3 = "3-Total number of episodes";
-							System.out.println("What would you like to update");
-							System.out.printf("%-20s %-20s %-20s\n",option1, option2, option3);
-							String option = scan.next();
-							
-							if(option.equals("1")) {
-								System.out.print("Enter new name: ");
-								scan.nextLine();
-								String name = scan.nextLine();
-								validShow.setShowName(name);
-							} else if(option.equals("2")) {
-								System.out.print("Enter new description: ");
-								scan.nextLine();
-								String descript = scan.nextLine();
-								validShow.setDesc(descript);
-							} else if(option.equals("3")) {
-								System.out.print("Enter new number of total episodes: ");
-								int totalNum = scan.nextInt();
-								validShow.setNumEp(totalNum);
-							}
-							
-
-							a1.updateShow(validShow);
-							a1.getAllShows();
-						} else {
-							System.out.println("Invalid show entered");
-						}
-						
-				
-					//------------------
-					// DELETE SHOW
-					//------------------
-					} else if (menuChoice.equals("3")){
-						
-						a1.getAllShows();
-						System.out.println("Enter Show ID to delete: ");
-						int id = scan.nextInt();
-						
-						boolean deleted = a1.deleteShow(id);	
-						
-						if(deleted) {
-							System.out.println("Deleted successfully");
-							a1.getAllShows();
-						}else {
-							System.out.println("Could not delete");
-						}
-						
-					} else if(menuChoice.equals("q")) {
-						System.out.println("Exiting program...");
-						break;
+				System.out.println("1- Sign Up\t2- Login \t0-Exit");
+				choice = scan.nextInt();
+				if (choice == 1) {
+					SignUp(scan);
+				} else if (choice == 2) {
+					do {
+						System.out.print("Username: ");
+						username = scan.next();
+						System.out.print("Password: ");
+						password = scan.next();
+						u1 = checkUser(username, password);
 					}
-				
-				} while (menuChoice.equals("1") || menuChoice.equals("2") || menuChoice.equals("3") || menuChoice.equals("q") );
-			}
+					while (u1.getUsername() == null);
+					System.out.println("Welcome " + u1.getUsername() + "!" + "\n\n");
+
+					if (u1.getRoleType() == 0) {
+						printUserShows(u1.getUserId());
+						String input;
+						do {
+							input = promptUserActions(u1, scan);
+						} while (!input.equals("q"));
+
+					} else {
+						do {
+							AdminDaoSql a1 = new AdminDaoSql();
+							a1.setConnection();
+							menuChoice = promptAdminActions(scan);
+
+
+							//------------------
+							// CREATE NEW SHOW
+							//------------------
+							if (menuChoice.equals("1")) {
+
+								System.out.print("Show Name: ");
+								String sName = scan.nextLine();
+
+								System.out.print("Description: ");
+								String desc = scan.nextLine();
+
+								System.out.println("Number of Episodes:");
+								int numEps = scan.nextInt();
+
+								Show s1 = new Show(sName, desc, numEps);
+								a1.createShow(s1);
+								a1.getAllShows();
+
+
+								//------------------
+								// UPDATE SHOW
+								//------------------
+							} else if (menuChoice.equals("2")) {
+
+								a1.getAllShows();
+								System.out.print("Enter Show ID for update: ");
+								int id = scan.nextInt();
+								Optional<Show> show = a1.getShowById(id);
+								if (show.isPresent()) {
+
+									Show validShow = show.get();
+
+									String option1 = "1-Name", option2 = "2-Description", option3 = "3-Total number of episodes";
+									System.out.println("What would you like to update");
+									System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
+									String option = scan.next();
+
+									if (option.equals("1")) {
+										System.out.print("Enter new name: ");
+										scan.nextLine();
+										String name = scan.nextLine();
+										validShow.setShowName(name);
+									} else if (option.equals("2")) {
+										System.out.print("Enter new description: ");
+										scan.nextLine();
+										String descript = scan.nextLine();
+										validShow.setDesc(descript);
+									} else if (option.equals("3")) {
+										System.out.print("Enter new number of total episodes: ");
+										int totalNum = scan.nextInt();
+										validShow.setNumEp(totalNum);
+									}
+
+
+									a1.updateShow(validShow);
+									a1.getAllShows();
+								} else {
+									System.out.println("Invalid show entered");
+								}
+
+
+								//------------------
+								// DELETE SHOW
+								//------------------
+							} else if (menuChoice.equals("3")) {
+
+								a1.getAllShows();
+								System.out.println("Enter Show ID to delete: ");
+								int id = scan.nextInt();
+
+								boolean deleted = a1.deleteShow(id);
+
+								if (deleted) {
+									System.out.println("Deleted successfully");
+									a1.getAllShows();
+								} else {
+									System.out.println("Could not delete");
+								}
+
+							} else if (menuChoice.equals("q")) {
+								System.out.println("Exiting program...");
+								break;
+							}
+
+						} while (menuChoice.equals("1") || menuChoice.equals("2") || menuChoice.equals("3") || menuChoice.equals("q"));
+					}
+				}
+			} while (choice != 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-
 	public static User checkUser(String username, String password) {
 		// check user data with database
 		UserDao userDao = new UserDaoSql();
@@ -202,9 +208,9 @@ public class ProgressTrackerDriver {
 
 	public static String promptUserActions(User user,Scanner scan) {
 		
-		String option1 = "1-Add Show", option2 = "2-Update Progress",option3="3-View Favorites", option0 = "q-Quit";
+		String option1 = "1-Add Show", option2 = "2-Update Progress",option3="3-View Favorites", option0 = "q-Log out";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3,option0);
+		System.out.printf("%-20s %-20s %-20s %-20s\n", option1, option2, option3,option0);
 		UserDao userDao = new UserDaoSql();
 		
 		try {
@@ -329,7 +335,7 @@ public class ProgressTrackerDriver {
 				} while (menuChoice != 0);
 			}
 			else if(input.equals("q")) {
-				System.out.println("Exiting program...");
+				System.out.println("Signing out...");
 			}
 			
 			return input;
@@ -366,5 +372,19 @@ public class ProgressTrackerDriver {
 		return null;
 		
 	}
-	
+	public static void SignUp(Scanner scanner){
+		System.out.print("Username:");
+		String username= scanner.next();
+		System.out.print("Password:");
+		String password= scanner.next();
+		User user=new User(username,password);
+		UserDaoSql userDaoSql=new UserDaoSql();
+		try {
+			userDaoSql.setConnection();
+			if(userDaoSql.addUser(user)) System.out.println("User Added");
+		} catch (ClassNotFoundException | IOException | SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 }

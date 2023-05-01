@@ -21,7 +21,7 @@ public interface UserDao {
 	
 	public Optional<UserShow> getUserShow(int userID, int showID);
 	public Optional<User> authenticateUser(String username, String password);
-	
+	public boolean addUser(User user) throws SQLException;
 	public boolean addShows(UserShow show);
 	public boolean addFavorite(UserShow show) throws SQLException;
 	public boolean removeFavorite(int userID,int showID) throws SQLException;
