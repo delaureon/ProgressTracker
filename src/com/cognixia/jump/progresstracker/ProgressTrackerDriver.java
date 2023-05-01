@@ -202,9 +202,9 @@ public class ProgressTrackerDriver {
 
 	public static String promptUserActions(User user,Scanner scan) {
 		
-		String option1 = "1-Add Show", option2 = "2-Update Progress", option3 = "q-Quit";
+		String option1 = "1-Add Show", option2 = "2-Update Progress",option3="3-View Favorites", option0 = "q-Quit";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
+		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3,option0);
 		UserDao userDao = new UserDaoSql();
 		
 		try {
@@ -304,7 +304,31 @@ public class ProgressTrackerDriver {
 					// Exception here?
 				}
 				
-			} else if(input.equals("q")) {
+			} else if(input.equals("3")) {
+				int menuChoice;
+				do {
+					userDao.getFavorites(user.getUserId());
+
+					System.out.printf("%20s %20s %20s\n", "1- Add Favorite", "2- Remove Favorite", "0- Back");
+					menuChoice = scan.nextInt();
+					int showID;
+					if (menuChoice == 1) {
+						System.out.print("Show ID:");
+						showID = scan.nextInt();
+						Optional<UserShow> userShow = userDao.getUserShow(user.getUserId(), showID);
+						if (userShow.isEmpty()) {
+							System.out.println("This show is not on your list");
+						} else {
+							userDao.addFavorite(userShow.get());
+						}
+					}else if(menuChoice==2){
+						System.out.print("Show ID:");
+						showID= scan.nextInt();
+						userDao.removeFavorite(user.getUserId(),showID);
+					}
+				} while (menuChoice != 0);
+			}
+			else if(input.equals("q")) {
 				System.out.println("Exiting program...");
 			}
 			

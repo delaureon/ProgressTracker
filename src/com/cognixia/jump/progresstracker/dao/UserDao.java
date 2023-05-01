@@ -23,8 +23,12 @@ public interface UserDao {
 	public Optional<User> authenticateUser(String username, String password);
 	
 	public boolean addShows(UserShow show);
-
+	public boolean addFavorite(UserShow show) throws SQLException;
+	public boolean removeFavorite(int userID,int showID) throws SQLException;
+	public boolean getFavorites(int userID) throws SQLException;
 	public boolean updateShows(UserShow show);
+
+
 	
 	// Admin class that implements this interface will have create, update, and delete functions within its own class
 	

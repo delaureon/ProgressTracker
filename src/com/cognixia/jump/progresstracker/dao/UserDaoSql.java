@@ -188,6 +188,57 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 	}
 
 	@Override
+	public boolean addFavorite(UserShow show) {
+		PreparedStatement pstmt = null;
+		int count = 0;
+		try {
+			pstmt = conn.prepareStatement("insert into user_favorites values (?,?)");
+			pstmt.setInt(1, show.getUserID());
+			pstmt.setInt(2, show.getShowID());
+			count = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("Could not add to favorites");
+		}
+
+		return count > 0;
+	}
+
+	@Override
+	public boolean removeFavorite(int userID, int showID) throws SQLException {
+		int count = 0;
+		try (PreparedStatement pstmt = conn.prepareStatement("delete from user_favorites where user_id=? and show_id=?")) {
+			pstmt.setInt(1, userID);
+			pstmt.setInt(2, showID);
+			count = pstmt.executeUpdate();
+			if(count==0){
+				System.out.println("Show is not a favorite");
+			}
+		}catch (SQLException e){
+			System.out.println("Could not remove favorite");
+		}
+		return count > 0;
+	}
+
+	@Override
+	public boolean getFavorites(int userID)  {
+		try(PreparedStatement pstmt= conn.prepareStatement("select show_id,Name from user_favorites uf join Shows s on uf.show_id=s.ShowID where uf.user_id=? ")){
+	pstmt.setInt(1,userID);
+	ResultSet rs=pstmt.executeQuery();
+			System.out.printf("%20s %20s\n","Show ID","Name" );
+			System.out.println("------------------------------");
+	while(rs.next()){
+		int showID=rs.getInt("show_id");
+		String name=rs.getString("name");
+		System.out.printf("%20s %20s\n", showID,name);
+	}
+		} catch (SQLException e) {
+			System.out.println("Could not get user favorites");
+		}
+		return false;
+	}
+
+	@Override
 	public boolean getAllShows() {
 		
 		try(Statement stmnt = conn.createStatement();
