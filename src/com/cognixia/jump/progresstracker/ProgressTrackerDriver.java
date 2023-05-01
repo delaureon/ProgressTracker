@@ -202,9 +202,9 @@ public class ProgressTrackerDriver {
 
 	public static String promptUserActions(User user,Scanner scan) {
 		
-		String option1 = "1-Add Show", option2 = "2-Update Progress", option3 = "q-Quit";
+		String option1 = "1-Add Show", option2 = "2-Update Progress", option10 = "3-Delete Show", option3 = "q-Quit";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option3);
+		System.out.printf("%-20s %-20s %-20s\n", option1, option2, option10, option3);
 		UserDao userDao = new UserDaoSql();
 		
 		try {
@@ -304,7 +304,12 @@ public class ProgressTrackerDriver {
 					// Exception here?
 				}
 				
-			} else if(input.equals("q")) {
+			}else if(input.equals("3")) {
+				System.out.println("Which Show Would you like to delete?");
+				int showId = scan.nextInt();
+				userDao.deleteUserShowById(showId);
+				
+			}else if(input.equals("q")) {
 				System.out.println("Exiting program...");
 			}
 			

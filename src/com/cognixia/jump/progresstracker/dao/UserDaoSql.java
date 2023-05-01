@@ -263,6 +263,22 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from users_shows w
 
 		return Optional.empty();
 	}
+	
+	public boolean deleteUserShowById(int showID) {
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("Delete from users_shows where ShowID = ?" );
+			pstmt.setInt(1,showID);
+			pstmt.executeUpdate();
+			
+		} 
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	
 
 
 	

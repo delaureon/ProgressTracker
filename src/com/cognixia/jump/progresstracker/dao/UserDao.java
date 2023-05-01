@@ -26,6 +26,8 @@ public interface UserDao {
 
 	public boolean updateShows(UserShow show);
 	
+	public boolean deleteUserShowById(int showId);
+	
 	// Admin class that implements this interface will have create, update, and delete functions within its own class
 	
 	
