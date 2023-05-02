@@ -15,7 +15,7 @@ public interface UserDao {
 	// Obtains the list of user shows
 	public boolean getShows(int id);
 	
-	public boolean getAllShows();
+	public boolean getAllShows(int id);
 	
 	public Optional<Show> getShowById(int id);
 	

@@ -211,7 +211,7 @@ public class ProgressTrackerDriver {
 
 		String option1 = "1-Add Show", option2 = "2-Update Progress",option3="3-View Favorites", option9= "4-Delete Show", option0 = "q-Log out";
 		System.out.println("\nWhat would you like to do?");
-		System.out.printf("%-20s %-20s %-20s %-20s\n", option1, option2, option3,option9, option0);
+		System.out.printf("%-20s %-20s %-20s %-20s %-20s\n", option1, option2, option3,option9, option0);
 
 		UserDao userDao = new UserDaoSql();
 		
@@ -220,7 +220,7 @@ public class ProgressTrackerDriver {
 			String input = scan.next();
 			
 			if(input.equals("1")) {
-				userDao.getAllShows();
+				userDao.getAllShows(user.getUserId());
 				System.out.print("\nAdd show by ID: ");
 				int showId = scan.nextInt();
 				int userId = user.getUserId();
@@ -239,17 +239,20 @@ public class ProgressTrackerDriver {
 				if(currShow.isPresent()) {
 					Show validShow = currShow.get();
 
-					if(currEp > validShow.getNumEp()) {
-						throw new CurrentEpOverTotalException(currEp, validShow.getNumEp());
-					}
+						if (currEp > validShow.getNumEp()) {
+							try {
+								throw new CurrentEpOverTotalException(currEp, validShow.getNumEp());
+							}catch (CurrentEpOverTotalException e) {
+								System.out.println("Invalid number");
+							}
+						}else{
+							UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
+							userDao.addShows(userShow);
 
-				}
-				UserShow userShow = new UserShow(userId, showId, progressId, rating, currEp);
-				userDao.addShows(userShow);
-				
-				userDao.getShows(user.getUserId());
-				
-				
+							userDao.getShows(user.getUserId());
+
+						}
+					}
 				
 			} else if(input.equals("2")) {
 				// Gets all the user shows so user knows which one to update
@@ -296,22 +299,19 @@ public class ProgressTrackerDriver {
 						Optional<Show> currShow1 = userDao.getShowById(showId);
 						if(currShow1.isPresent()) {
 							Show validShow1 = currShow1.get();
-
-							if(currEp > validShow1.getNumEp()) {
-								throw new CurrentEpOverTotalException(currEp, validShow1.getNumEp());
-							}
-
+						try {
+							validateShowNumber(validShow1, currEp);
+							s2U.setCurrEp(currEp);
+							userDao.updateShows(s2U);
+						} catch (CurrentEpOverTotalException e) {
+							System.out.println(e.getMessage());
 						}
-						s2U.setCurrEp(currEp);
-						userDao.updateShows(s2U);
+						}
+
 						userDao.getShows(user.getUserId());
 					}
-					
-					
-				} else {
-					// Exception here?
+
 				}
-				
 
 			} else if(input.equals("3")) {
 				int menuChoice;
@@ -336,7 +336,7 @@ public class ProgressTrackerDriver {
 						userDao.removeFavorite(user.getUserId(),showID);
 					}
 				} while (menuChoice != 0);
-			}else if(input.equals("3")) {
+			}else if(input.equals("4")) {
 				System.out.println("Which Show Would you like to delete?");
 				int showId = scan.nextInt();
 				userDao.deleteUserShowById(showId);
@@ -347,8 +347,6 @@ public class ProgressTrackerDriver {
 			}
 			
 			return input;
-		}catch(CurrentEpOverTotalException e) {
-			System.out.println(e.getMessage());
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid choice entered");
 		} catch (Exception e) {
@@ -394,5 +392,11 @@ public class ProgressTrackerDriver {
 			throw new RuntimeException(e);
 		}
 
+	}
+
+	public static void validateShowNumber(Show show, int currentEp)throws CurrentEpOverTotalException{
+		if(currentEp>show.getNumEp()){
+			throw new CurrentEpOverTotalException(currentEp,show.getNumEp());
+		}
 	}
 }
