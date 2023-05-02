@@ -23,7 +23,10 @@ public class User {
 		this.password = password;
 		this.roleType = roleType;
 	}
-
+	public User( String username,String password){
+		this.password=password;
+		this.username=username;
+	}
 	public int getUserId() {
 		return userId;
 	}

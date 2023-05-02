@@ -15,13 +15,13 @@ public interface UserDao {
 	// Obtains the list of user shows
 	public boolean getShows(int id);
 	
-	public boolean getAllShows();
+	public boolean getAllShows(int id);
 	
 	public Optional<Show> getShowById(int id);
 	
 	public Optional<UserShow> getUserShow(int userID, int showID);
 	public Optional<User> authenticateUser(String username, String password);
-	
+	public boolean addUser(User user) throws SQLException;
 	public boolean addShows(UserShow show);
 	public boolean addFavorite(UserShow show) throws SQLException;
 	public boolean removeFavorite(int userID,int showID) throws SQLException;
@@ -29,6 +29,8 @@ public interface UserDao {
 	public boolean updateShows(UserShow show);
 
 
+	
+	public boolean deleteUserShowById(int showId);
 	
 	// Admin class that implements this interface will have create, update, and delete functions within its own class
 	

@@ -145,8 +145,21 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 		return Optional.empty();
 	}
 
+	@Override
+	public boolean addUser(User user){
+		int count = 0;
+		try (PreparedStatement pstmt = conn.prepareStatement("insert into Users values(null,?,?,0)")) {
+			pstmt.setString(1, user.getUsername());
+			pstmt.setString(2, user.getPassword());
+			count = pstmt.executeUpdate();
 
-	
+		} catch (SQLException e) {
+			System.out.println("Username has already been taken");
+		}
+		return count > 0;
+	}
+
+
 	@Override
 	public boolean updateShows(UserShow show) {
 		try(PreparedStatement pstmt=conn.prepareStatement("Update users_shows set ProgressID=?,Rating=?,CurrentEp=? Where UserID=? and ShowID=?")){
@@ -181,8 +194,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 				return true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Could not add show");
 		}
 		return false;
 	}
@@ -226,7 +238,7 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 	pstmt.setInt(1,userID);
 	ResultSet rs=pstmt.executeQuery();
 			System.out.printf("%20s %20s\n","Show ID","Name" );
-			System.out.println("------------------------------");
+			System.out.println("----------------------------------------------------------");
 	while(rs.next()){
 		int showID=rs.getInt("show_id");
 		String name=rs.getString("name");
@@ -239,11 +251,11 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where S
 	}
 
 	@Override
-	public boolean getAllShows() {
+	public boolean getAllShows(int id) {
 		
-		try(Statement stmnt = conn.createStatement();
-				ResultSet rs = stmnt.executeQuery("select * from shows")
-			   ){
+		try(PreparedStatement pstmt = conn.prepareStatement("select * from shows where ShowID not in (select ShowID from users_shows where UserID=?)")){
+			pstmt.setInt(1,id);
+			ResultSet rs = pstmt.executeQuery();
 				System.out.printf("%10s %20s %20s %20s", "Show ID","Name", "Total Episodes","Description");
 				System.out.println("\n----------------------------------------------------------------------------------------------------------------");		
 				while(rs.next()) {
@@ -314,6 +326,22 @@ try(PreparedStatement pstmt = conn.prepareStatement("select * from users_shows w
 
 		return Optional.empty();
 	}
+	
+	public boolean deleteUserShowById(int showID) {
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("Delete from users_shows where ShowID = ?" );
+			pstmt.setInt(1,showID);
+			pstmt.executeUpdate();
+			
+		} 
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	
 
 
 	
